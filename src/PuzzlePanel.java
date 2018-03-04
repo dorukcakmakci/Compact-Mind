@@ -17,7 +17,6 @@ public class PuzzlePanel extends JPanel{
 	static final int rectWidth = 100;
 	//
 	private HTMLProcessor input;
-	private int[][] puzzle;
 	//
 	
 	public PuzzlePanel() throws Exception{
@@ -25,16 +24,6 @@ public class PuzzlePanel extends JPanel{
 		Dimension screen = new Dimension(SCREEN_HEIGHT,SCREEN_WIDTH);
 		setVisible(true);
 		this.setPreferredSize(screen);
-		//
-		puzzle = new int[puzzleSize][puzzleSize];
-		for(int i = 0; i < puzzleSize;i++){
-			for(int j = 0; j < puzzleSize; j++){
-				puzzle[i][j] = puzzleRect;
-			}
-		}
-		puzzle[0][0] = blankRect;
-		puzzle[0][1] = 1;
-		puzzle[3][0] = 2;
 		//
 	}
 	
@@ -46,15 +35,16 @@ public class PuzzlePanel extends JPanel{
 		int startY = 40;
 		for(int i = 0; i < puzzleSize;i++){
 			for(int j = 0; j < puzzleSize;j++){
-				if(puzzle[i][j] == -1)
+				if(input.puzzle[i][j].currentLetter == "-1")
 					g.fillRect(startX, startY, rectWidth, rectWidth);
-				else if(puzzle[i][j] == 0){
+				else if(input.puzzle[i][j].currentLetter == ""){
 					g.drawRect(startX, startY, rectWidth, rectWidth);
 				}
-				else{
+				else{} //do nothing
+				if(input.puzzle[i][j].questionNo != ""){
 					g.drawRect(startX, startY, rectWidth, rectWidth);
 					g.setFont(new Font("TimesRoman", Font.PLAIN, 20)); 
-					g.drawString(puzzle[i][j] + "", startX + 10, startY + 20);
+					g.drawString(input.puzzle[i][j].questionNo, startX + 10, startY + 20);
 				}
 				startY = startY + rectWidth + blankRectPixel;
 			}

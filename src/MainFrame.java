@@ -8,7 +8,6 @@ public class MainFrame extends JFrame{
 	static final String title = "Origin";
 	
 	PuzzlePanel puzzle;
-	
 	public MainFrame() throws Exception{
 		init();
 		puzzle = new PuzzlePanel();
