@@ -9,14 +9,24 @@ public class HTMLProcessor{
 	
 	
     public HTMLProcessor() throws Exception {
+    	final String PUZZLE_DIR = "./ph/";
     	hints = new ArrayList[2];
     	hints[0] = new ArrayList<String>();
     	hints[1] = new ArrayList<String>();
+    	Date date = new Date();
+    	Calendar cal = Calendar.getInstance();
+    	cal.setTime(date);
+    	int month = cal.get(Calendar.MONTH) + 1;
+    	int day = cal.get( Calendar.DAY_OF_WEEK);
+    	int year = cal.get( Calendar.YEAR);
+
     	
         URL oracle = new URL("https://www.nytimes.com/crosswords/game/mini");
         BufferedReader in = new BufferedReader(
         			new InputStreamReader(oracle.openStream()));
-        BufferedWriter writer = new BufferedWriter(new FileWriter("outputfile.txt"));
+        String puzzlePath = PUZZLE_DIR + month + "-" + day + "-" + year + ".txt";
+		File file = new File( puzzlePath);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(puzzlePath));
        // System.out.println("Succesfully created html");
         String inputLine;
         while ((inputLine = in.readLine()) != null){
@@ -33,14 +43,14 @@ public class HTMLProcessor{
         
         StringBuilder contentBuilder = new StringBuilder();
         try {
-            BufferedReader fileReader = new BufferedReader(new FileReader("outputfile.txt"));
+            BufferedReader fileReader = new BufferedReader(new FileReader(puzzlePath));
             String str;
             while ((str = fileReader.readLine()) != null) {
                 contentBuilder.append(str);
             }
             fileReader.close();
         } catch (IOException e) {
-        	System.out.print("sýçtýk");
+        	System.out.print("sï¿½ï¿½tï¿½k");
         }
         content = contentBuilder.toString();
         //PARSING FOR HINTS
