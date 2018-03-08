@@ -4,7 +4,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +24,6 @@ public class SeleniumConnection {
         System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
         System.setProperty("webdriver.gecko.driver", "./geckodriver");
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--window-position=-32000,-32000");
         webDriver = new ChromeDriver(options);
 
         //Open puzzle page
@@ -39,7 +41,7 @@ public class SeleniumConnection {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int month = cal.get(Calendar.MONTH) + 1;
-        int day = cal.get( Calendar.DAY_OF_WEEK);
+        int day = cal.get( Calendar.DAY_OF_WEEK) + 2;
         int year = cal.get( Calendar.YEAR);
 
         String puzzlePath = "./ph/reveal-" + month + "-" + day + "-" + year + ".txt";
@@ -53,11 +55,11 @@ public class SeleniumConnection {
             e.printStackTrace();
         }
         Scanner scan = new Scanner( pageSource);
-        String inputLine;
+        
         try {
-            while ((inputLine = scan.nextLine()) != null){
+            while (scan.hasNextLine()){
                 try{
-                    writer.write(inputLine);
+                    writer.write(scan.nextLine());
                 }
                 catch(IOException e){
 
@@ -70,9 +72,7 @@ public class SeleniumConnection {
             e.printStackTrace();
             return;
         }
-
-
-
-        webDriver.getPageSource();
+        webDriver.close();
+        webDriver.quit();
     }
 }
