@@ -112,8 +112,8 @@ public class HTMLProcessor{
 
 			}
 			else if(cellEmptyIndex < cellLetterIndex && cellEmptyIndex < cellLetterNoIndex && cellEmptyIndex != -1){
-				puzzle[i][j].questionNo = "";
-				puzzle[i][j].currentLetter = "-1"; //-1 for blank
+				puzzle[i][j].setQuestionNo("");
+                puzzle[i][j].setCurrentLetter("-1"); //-1 for blank
 				tempContent = tempContent.substring(cellEmptyIndex + 11);
 				if(i == 4){
 					j++;
@@ -135,7 +135,7 @@ public class HTMLProcessor{
 					cellLetterNoIndex++;
 				}
 				tempContent = tempContent.substring(cellLetterNoIndex);
-				puzzle[i][j].questionNo = letterNo;
+				puzzle[i][j].setQuestionNo(letterNo);
 				//System.out.print(letterNo + "-");
 				//System.out.println(i+"-"+j+"false");
 			}
@@ -150,7 +150,7 @@ public class HTMLProcessor{
 				cellLetterIndex++;
 			}
 			tempContent = tempContent.substring(cellLetterIndex);
-			puzzle[i][j].currentLetter = letter;
+			puzzle[i][j].setCurrentLetter(letter);
 			//System.out.println(letter);
 			if(i == 4){
 				j++;

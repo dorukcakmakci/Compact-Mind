@@ -5,10 +5,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class LoadingScreen extends JPanel{
-	static final int SCREEN_HEIGHT = 900;
-	static final int SCREEN_WIDTH = 1200;
-	BufferedImage loadingImage;
-	Image loadingCircle;
+	private static final int SCREEN_HEIGHT = 900;
+	private static final int SCREEN_WIDTH = 1200;
+	private BufferedImage loadingImage;
+	private Image loadingCircle;
 	public LoadingScreen(){
 		try {
 			loadingImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/loading.png"));
@@ -24,5 +24,4 @@ public class LoadingScreen extends JPanel{
 		g.drawImage(loadingImage, 0, 0, this);
 		g.drawImage(loadingCircle, 562, 580, this);
 	}
-
 }

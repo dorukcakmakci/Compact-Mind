@@ -3,38 +3,43 @@ import java.awt.*;
 
 public class MainFrame extends JFrame{
 
-	static final String title = "Compact Mind";
-	
-	PuzzlePanel puzzle;
-	SeleniumConnection connection;
-	public MainFrame() throws Exception{
-		LoadingScreen loading = new LoadingScreen();
-		this.add(loading);
-		this.setFocusable(true);
-		Dimension size = new Dimension(1200,900);
-		setSize(size);
+	private static final String SCREEN_TITLE = "Compact Mind";
+	private static final int SCREEN_WIDTH = 1200;
+	private static final int SCREEN_HEIGHT = 900;
+	private PuzzlePanel puzzle;
+	private SeleniumConnection connection;
+
+	private MainFrame() {
 		init();
-		connection = new SeleniumConnection();
-		puzzle = new PuzzlePanel();
-		loading.setVisible(false);
-		this.remove(loading);
-		this.add(puzzle);
-		puzzle.requestFocus();
-		pack();
-		repaint();
 	}
 	private void init(){
+		LoadingScreen loading = new LoadingScreen();
+		this.add(loading); //ADDING LOADING SCREEN WHILE SELENIUM IS DOWNLOADING THE TODAY'S PUZZLE
+		this.setFocusable(true);
+		Dimension size = new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT);
+		setSize(size);
 		setLayout(new GridLayout(1,1,0,0));
-		setTitle(title);
+		setTitle(SCREEN_TITLE);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		pack();
+		connection = new SeleniumConnection();
+		try {
+			puzzle = new PuzzlePanel();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		loading.setVisible(false);
+		this.remove(loading); //REMOVING THE LOADING SCREEN AND ADDING THE PUZZLE LAYOUT
+		this.add(puzzle);
+		puzzle.requestFocus();
+		pack();
+		repaint();
 	}
 
-	
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) {
 		MainFrame f = new MainFrame();
 	}
 }

@@ -9,36 +9,41 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class PuzzlePanel extends JPanel{
-	static final int SCREEN_HEIGHT = 900;
-	static final int SCREEN_WIDTH = 1200;
-	static final int puzzleSize = 5;
-	static final int blankRectPixel = 2;
-	static final int blankRect = -1;
-	static final int puzzleRect = 0;
-	static final int rectWidth = 100;
-	//
+	private static final int SCREEN_HEIGHT = 900;
+	private static final int SCREEN_WIDTH = 1200;
+	private static final int puzzleSize = 5;
+	private static final int blankRectPixel = 2;
+	private static final int blankRect = -1;
+	private static final int puzzleRect = 0;
+	private static final int rectWidth = 100;
 	private HTMLProcessor input;
-	//
-	private Control mouse;
-	private KeyInput keyboard;
-	//
-	public BufferedImage revealImage;
-	public BufferedImage startImage;
-	public BufferedImage readFileImage;
-	//
+	private Control mouse; //MOUSE LISTENER
+	private KeyInput keyboard; //KEYBOARD LISTENER
+	private BufferedImage revealImage;
+	private BufferedImage startImage;
+	private BufferedImage readFileImage;
 	private boolean isRevealed;
 	private boolean isRead;
 	private String[][] puzzle;
-	//
-	public int selectedRectX = -1;
-	public int selectedRectY = -1;
-	//
-	public String fileToRead;
+	private int selectedRectX = -1;
+	private int selectedRectY = -1;
+	private String fileToRead;
+	private ProgramLog log;
 
-	public PuzzlePanel() throws Exception{
+	public PuzzlePanel() {
+		init();
+
+	}
+	private void init(){
+		log = new ProgramLog();
 		fileToRead = "";
 		isRevealed = false;
 		isRead = false;
+		mouse = new Control(); // mouse adapter
+		keyboard = new KeyInput();
+		addMouseListener(mouse);
+		addKeyListener(keyboard);
+
 		try {
 			revealImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/reveal_image.png"));
 		}	catch(IOException exc) {
@@ -60,11 +65,6 @@ public class PuzzlePanel extends JPanel{
 				puzzle[i][j] = "";
 			}
 		}
-
-		mouse = new Control(); // mouse adapter
-		keyboard = new KeyInput();
-		addMouseListener(mouse);
-		addKeyListener(keyboard);
 		this.setFocusable(true);
 		this.requestFocus();
 		input = new HTMLProcessor(); //HTML saver
@@ -74,11 +74,14 @@ public class PuzzlePanel extends JPanel{
 		this.setPreferredSize(screen);
 		this.setFocusable(true);
 		this.requestFocus();
+		log.addLog("Initializing and drawing the layout.");
 		repaint();
-		//
 	}
 
 	public void paint(Graphics g){
+		paintLayout(g);
+	}
+	private void paintLayout(Graphics g){
 		g.setColor(Color.lightGray);
 		g.fillRect(0, 0, 1200, 900);
 		g.setColor(Color.black);
@@ -88,11 +91,11 @@ public class PuzzlePanel extends JPanel{
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		for(int i = 0; i < puzzleSize;i++){
 			for(int j = 0; j < puzzleSize;j++){
-				if(input.puzzle[i][j].currentLetter == "-1"){
+				if(input.puzzle[i][j].getCurrentLetter() == "-1"){
 					g.setColor(Color.black);
 					g.fillRect(startX, startY, rectWidth, rectWidth); // -1 for blank
 				}
-				else if(input.puzzle[i][j].currentLetter != ""){
+				else if(input.puzzle[i][j].getCurrentLetter() != ""){
 					g.setColor(Color.black);
 					g.drawRect(startX, startY, rectWidth, rectWidth);
 					g.drawString(puzzle[i][j],startX+50,startY+60);
@@ -101,11 +104,11 @@ public class PuzzlePanel extends JPanel{
 					g.setColor(Color.black);
 					g.drawRect(startX, startY, rectWidth, rectWidth);
 				}
-				if(input.puzzle[i][j].questionNo != ""){
+				if(input.puzzle[i][j].getQuestionNo() != ""){
 					g.setColor(Color.black);
 					g.drawRect(startX, startY, rectWidth, rectWidth);
 					g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-					g.drawString(input.puzzle[i][j].questionNo, startX + 10, startY + 20);
+					g.drawString(input.puzzle[i][j].getQuestionNo(), startX + 10, startY + 20);
 				}
 				startY = startY + rectWidth + blankRectPixel;
 			}
@@ -161,6 +164,14 @@ public class PuzzlePanel extends JPanel{
 		//
 		g.setColor(Color.WHITE);  //PRORAM LOG
 		g.fillRect(50, 620, 520, 230);
+		g.setColor(Color.BLACK);
+		//LOG TEXT
+		int testHeigth = 640;
+		for(int i = 0; i < log.getLineCount();i++){
+			g.drawString(log.getText(i),60,testHeigth); //PROGRAMLOG
+			testHeigth = testHeigth + 18;
+		}
+
 		repaint();
 		///DRAWING REVEALED PUZZLE
 		if(isRevealed == true){
@@ -170,24 +181,24 @@ public class PuzzlePanel extends JPanel{
 			g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
 			for(int i = 0; i < puzzleSize;i++){
 				for(int j = 0; j < puzzleSize;j++){
-					if(input.puzzle[i][j].currentLetter == "-1"){
+					if(input.puzzle[i][j].getCurrentLetter() == "-1"){
 						g.setColor(Color.black);
 						g.fillRect(startX, startY, revealPuzzleSize, revealPuzzleSize); // -1 for blank
 					}
-					else if(input.puzzle[i][j].currentLetter != ""){
+					else if(input.puzzle[i][j].getCurrentLetter() != ""){
 						g.setColor(Color.black);
 						g.drawRect(startX, startY, revealPuzzleSize, revealPuzzleSize);
-						g.drawString(input.puzzle[i][j].currentLetter,startX+20,startY+25);
+						g.drawString(input.puzzle[i][j].getCurrentLetter(),startX+20,startY+25);
 					}
 					else{
 						g.setColor(Color.black);
 						g.drawRect(startX, startY, revealPuzzleSize, revealPuzzleSize);
 					}
-					if(input.puzzle[i][j].questionNo != ""){
+					if(input.puzzle[i][j].getQuestionNo() != ""){
 						g.setColor(Color.black);
 						g.drawRect(startX, startY, revealPuzzleSize, revealPuzzleSize);
 						g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
-						g.drawString(input.puzzle[i][j].questionNo, startX + 6, startY + 15);
+						g.drawString(input.puzzle[i][j].getQuestionNo(), startX + 6, startY + 15);
 					}
 					startY = startY + revealPuzzleSize + blankRectPixel;
 				}
@@ -196,36 +207,41 @@ public class PuzzlePanel extends JPanel{
 			}
 		}
 	}
-	public void reveal(){
+	private void reveal(){
 		isRevealed = isRevealed == false;
 		repaint();
+		log.addLog("Reveal is called.");
 
 	}
-	public void start(){
-		System.out.println("Start called");
+	private void start(){
+		log.addLog("Start is called");
 	}
-	public void read(){System.out.println("Read called");
+	private void read(){
 		//public htmli fileToRead stringi ile çağırabiliriz
 		input.readPuzzle(fileToRead);
+		log.addLog("Read puzzle is called for the file:" + fileToRead);
 		isRead = false;
 		fileToRead = "";
-		for(int i = 0; i < puzzleSize;i++)
-			for(int j = 0; j < puzzleSize;j++)
-				puzzle[i][j] = "";
+		cleanPuzzle();
 	}
-	public void fileInput(){System.out.println("File Input Called");}
-	public void selectRect(int x,int y){
+	private void selectRect(int x,int y){
 		isRead = false;
 		selectedRectX = x;
 		selectedRectY = y;
-		System.out.println(x +","+ y);
+		log.addLog("Rectangle with x:" + x + ", y:"+y+" is selected.");
 	}
-	//Mouse adapter
-	public class Control extends MouseAdapter{
-
+	private void cleanPuzzle(){
+		for(int i = 0; i < puzzleSize;i++)
+			for(int j = 0; j < puzzleSize;j++)
+				puzzle[i][j] = "";
+		log.addLog("Cleaned the puzzle.");
+	}
+	///////////////////////////
+	//MOUSE LISTENER START//
+	///////////////////////////
+	private class Control extends MouseAdapter{
 		private int mouseX;
 		private int mouseY;
-
 		public void mousePressed(MouseEvent e) {
 			mouseX = e.getX();
 			mouseY = e.getY();
@@ -243,7 +259,6 @@ public class PuzzlePanel extends JPanel{
 			}
 			if(mouseX >= 600 && mouseY >= 700 && mouseX <= 825 && mouseY <= 730){
 				isRead = true;
-				fileInput();
 			}
 			if(mouseX >= 760 && mouseY >= 620 && mouseX <= 835 && mouseY <= 685){
 				isRead = false;
@@ -331,9 +346,13 @@ public class PuzzlePanel extends JPanel{
 			}
 		}
 	}
-	/// MOUSE LISTENER END
-	public class KeyInput implements KeyListener{
-
+	///////////////////////////
+	//MOUSE LISTENER END///////
+	///////////////////////////
+	///////////////////////////
+	//KEYBOARD LISTENER START//
+	///////////////////////////
+	private class KeyInput implements KeyListener{
 		@Override
 		public void keyPressed(KeyEvent e) {
 			char c = e.getKeyChar();
@@ -345,7 +364,6 @@ public class PuzzlePanel extends JPanel{
 						fileToRead = fileToRead.substring(0,fileToRead.length()-1);
 				else
 					fileToRead = fileToRead + c;
-
 			}
 			else {
 				if ((int) c == 8) {
@@ -364,4 +382,7 @@ public class PuzzlePanel extends JPanel{
 		public void keyReleased(KeyEvent e) {}
 		public void keyTyped(KeyEvent e) {}
 	}
+	///////////////////////////
+	//KEYBOARD LISTENER END////
+	///////////////////////////
 }
