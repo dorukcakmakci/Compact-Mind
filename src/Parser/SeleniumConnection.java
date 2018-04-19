@@ -1,3 +1,5 @@
+package Parser;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -43,7 +45,7 @@ public class SeleniumConnection {
         int month = cal.get(Calendar.MONTH) + 1;
         int day = cal.get( Calendar.DAY_OF_WEEK) + 2;
         int year = cal.get( Calendar.YEAR);
-
+        System.out.println(month+","+day+","+year);
         String puzzlePath = "./ph/reveal-" + month + "-" + day + "-" + year + ".txt";
 
         File file = new File( puzzlePath);
