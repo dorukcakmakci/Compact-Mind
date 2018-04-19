@@ -1,3 +1,7 @@
+package UI;
+
+import Parser.SeleniumConnection;
+
 import javax.swing.*;
 import java.awt.*;
 

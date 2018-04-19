@@ -1,3 +1,7 @@
+package UI;
+
+import Parser.HTMLProcessor;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;

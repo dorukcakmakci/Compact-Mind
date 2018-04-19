@@ -1,3 +1,5 @@
+package UI;
+
 public class ProgramLog {
     private static final int MAX_LINE = 12;
 
