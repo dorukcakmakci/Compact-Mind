@@ -1,10 +1,9 @@
 package Solver;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-
 import UI.CellBlock;
+import UI.PuzzlePanel;
+
+import java.util.ArrayList;
 
 public class PuzzleSolver {
 
@@ -12,13 +11,14 @@ public class PuzzleSolver {
 	private String [][] puzzle;
 	private CellBlock[][] puzzle2;
 	private QuestionPriorityChecker questionChecker;
+	private PuzzlePanel panel;
 
 
-	public PuzzleSolver(ArrayList<String>[] hints, String [][] puzzle, CellBlock [][] puzzle2) {
+	public PuzzleSolver(ArrayList<String>[] hints, String [][] puzzle, CellBlock [][] puzzle2, PuzzlePanel panel) {
 		this.hints = hints;
 		this.puzzle = puzzle;
 		this.puzzle2 = puzzle2;
-
+		this.panel = panel;
 	}
 
 	public void solvePuzzle()
@@ -109,7 +109,7 @@ public class PuzzleSolver {
 									{
 
 										puzzle[i][question_y_index] = puzzle2[i][question_y_index].getCurrentLetter();
-										System.out.println(puzzle[i][question_y_index]);
+										panel.addLogInLine(puzzle[i][question_y_index]);
 									}
 
 								}
@@ -126,7 +126,7 @@ public class PuzzleSolver {
 									if(puzzle2[question_x_index][i].getCurrentLetter().equals(answers.get(k).substring(answer_count, answer_count+1).toUpperCase()))
 									{
 										puzzle[question_x_index][i] = puzzle2[question_x_index][i].getCurrentLetter();
-										System.out.println(puzzle[question_x_index][i]);
+										panel.addLogInLine(puzzle[question_x_index][i]);
 									}
 
 								}
@@ -141,7 +141,7 @@ public class PuzzleSolver {
 			
 			prev_start = start_question;
 			start_question++;
-			System.out.println(start_question);
+			panel.addLog("" + start_question);
 			count++;
 			if(count < 10)
 			{

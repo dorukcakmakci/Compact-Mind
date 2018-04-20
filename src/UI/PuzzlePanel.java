@@ -1,7 +1,8 @@
 package UI;
 
-import Solver.PuzzleSolver;
 import Parser.HTMLProcessor;
+import Solver.PuzzleSolver;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -386,10 +387,17 @@ public class PuzzlePanel extends JPanel{
 
 	public void start(){
 		System.out.println("Start called");
-		solver = new PuzzleSolver(input.hints, puzzle, input.puzzle);
+		solver = new PuzzleSolver(input.hints, puzzle, input.puzzle, this);
 		solver.solvePuzzle();
 	}
+
 	///////////////////////////
 	//KEYBOARD LISTENER END////
 	///////////////////////////
+	public void addLog(String input){
+		log.addLog(input);
+	}
+	public void addLogInLine(String input){
+		log.addLogSameLine(input);
+	}
 }

@@ -20,6 +20,12 @@ public class ProgramLog {
         text[line] = log;
         line++;
     }
+    public void addLogSameLine(String log){
+        if(line == 0)
+            text[line] = log;
+        else
+            text[line-1] = text[line-1] + log;
+    }
     public String getText(int i){
         return text[i];
     }
