@@ -1,4 +1,4 @@
-package backend;
+package Solver;
 
 import java.util.ArrayList;
 import UI.*;
@@ -118,9 +118,9 @@ public class QuestionPriorityChecker
 			{
 				for(int j = 0; j < 5 && flag; j++)
 				{
-					if(!puzzle2[pos_index][j].questionNo.equals(""))
+					if(!puzzle2[pos_index][j].getQuestionNo().equals(""))
 					{
-						question_number = puzzle2[pos_index][j].questionNo;
+						question_number = puzzle2[pos_index][j].getQuestionNo();
 						flag = false;
 					}
 				}
@@ -129,9 +129,9 @@ public class QuestionPriorityChecker
 			{
 				for(int j = 0; j < 5 && flag; j++)
 				{
-					if(!puzzle2[j][pos_index%5].questionNo.equals(""))
+					if(!puzzle2[j][pos_index%5].getQuestionNo().equals(""))
 					{
-						question_number = puzzle2[j][pos_index%5].questionNo;
+						question_number = puzzle2[j][pos_index%5].getQuestionNo();
 						flag = false;
 					}
 				}

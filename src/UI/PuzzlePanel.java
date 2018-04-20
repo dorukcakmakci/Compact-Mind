@@ -1,7 +1,7 @@
 package UI;
 
+import Solver.PuzzleSolver;
 import Parser.HTMLProcessor;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -33,10 +33,10 @@ public class PuzzlePanel extends JPanel{
 	private int selectedRectY = -1;
 	private String fileToRead;
 	private ProgramLog log;
+	PuzzleSolver solver;
 
 	public PuzzlePanel() {
 		init();
-
 	}
 	private void init(){
 		log = new ProgramLog();
@@ -217,9 +217,6 @@ public class PuzzlePanel extends JPanel{
 		log.addLog("Reveal is called.");
 
 	}
-	private void start(){
-		log.addLog("Start is called");
-	}
 	private void read(){
 		//public htmli fileToRead stringi ile çağırabiliriz
 		input.readPuzzle(fileToRead);
@@ -385,6 +382,12 @@ public class PuzzlePanel extends JPanel{
 		@Override
 		public void keyReleased(KeyEvent e) {}
 		public void keyTyped(KeyEvent e) {}
+	}
+
+	public void start(){
+		System.out.println("Start called");
+		solver = new PuzzleSolver(input.hints, puzzle, input.puzzle);
+		solver.solvePuzzle();
 	}
 	///////////////////////////
 	//KEYBOARD LISTENER END////

@@ -1,4 +1,4 @@
-package backend;
+package Solver;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -48,7 +48,7 @@ public class PuzzleSolver {
 			{
 				for(int j = 0; j < 5; j++)
 				{
-					if(puzzle2[i][j].questionNo.equals(start))
+					if(puzzle2[i][j].getQuestionNo().equals(start))
 					{
 						question_x_index = i;
 						question_y_index = j;
@@ -105,10 +105,10 @@ public class PuzzleSolver {
 								if(!(puzzle[i][question_y_index].equals("black")) && answer_count < answers.get(k).length() && (puzzle[i][question_y_index].equals("")))
 								{
 
-									if(puzzle2[i][question_y_index].currentLetter.equals(answers.get(k).substring(answer_count, answer_count+1).toUpperCase()))
+									if(puzzle2[i][question_y_index].getCurrentLetter().equals(answers.get(k).substring(answer_count, answer_count+1).toUpperCase()))
 									{
 
-										puzzle[i][question_y_index] = puzzle2[i][question_y_index].currentLetter;
+										puzzle[i][question_y_index] = puzzle2[i][question_y_index].getCurrentLetter();
 										System.out.println(puzzle[i][question_y_index]);
 									}
 
@@ -123,9 +123,9 @@ public class PuzzleSolver {
 							{
 								if(!(puzzle[question_x_index][i].equals("black")) && answer_count < answers.get(k).length() && (puzzle[question_x_index][i].equals("")))
 								{
-									if(puzzle2[question_x_index][i].currentLetter.equals(answers.get(k).substring(answer_count, answer_count+1).toUpperCase()))
+									if(puzzle2[question_x_index][i].getCurrentLetter().equals(answers.get(k).substring(answer_count, answer_count+1).toUpperCase()))
 									{
-										puzzle[question_x_index][i] = puzzle2[question_x_index][i].currentLetter;
+										puzzle[question_x_index][i] = puzzle2[question_x_index][i].getCurrentLetter();
 										System.out.println(puzzle[question_x_index][i]);
 									}
 
