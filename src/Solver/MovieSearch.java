@@ -1,4 +1,4 @@
-package Search;
+package Solver;
 
 
 import Parser.PuzzleWord;

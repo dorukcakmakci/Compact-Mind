@@ -247,7 +247,11 @@ public class PuzzlePanel extends JPanel{
 			mouseX = e.getX();
 			mouseY = e.getY();
 			if(mouseX >= 600 && mouseY >= 620 && mouseX <= 675 && mouseY <= 685){
-				start();
+				try {
+					start();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				isRead = false;
 				mouseX = 0;
 				mouseY = 0;
@@ -384,7 +388,7 @@ public class PuzzlePanel extends JPanel{
 		public void keyTyped(KeyEvent e) {}
 	}
 
-	public void start(){
+	public void start() throws IOException {
 		System.out.println("Start called");
 		solver = new PuzzleSolver(input.hints, puzzle, input.puzzle);
 		solver.solvePuzzle();

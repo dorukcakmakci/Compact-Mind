@@ -21,8 +21,7 @@ public class PuzzleSolver {
 
 	}
 
-	public void solvePuzzle()
-	{
+	public void solvePuzzle() throws IOException {
 		ArrayList<String> order = new ArrayList<String>();
 		questionChecker = new QuestionPriorityChecker(hints, puzzle, puzzle2);
 		order = questionChecker.generateOrder();
@@ -87,12 +86,18 @@ public class PuzzleSolver {
 			if(start_question != 4)
 			{
 				datamuseChecker.checkDatamuse(hints[hint_index].get(question_index), 5);
+				ArrayList<String> googleAnswers =
+						GoogleChecker.getGoogleSearch(hints[hint_index].get(question_index),5);
 				if(!(Datamuse.results.isEmpty()))
 				{
 					for(int i = 0; i < Datamuse.results.size(); i++)
 					{
 						answers.add(Datamuse.results.get(i));
 					}
+
+					for (String gAns: googleAnswers)
+						answers.add(gAns);
+
 
 					for(int k = 0; k < answers.size();k++)
 					{
