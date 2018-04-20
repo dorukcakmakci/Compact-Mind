@@ -30,7 +30,7 @@ public class Datamuse
 		
 		String json;
 		json = findSimilar(key);
-		if(json.isEmpty())
+		if(json.equals("[]"))
 		{		}
 		else
 		{

@@ -1,3 +1,5 @@
+package Parser;
+
 public class PuzzleWord {
     private int colNo;
     private int rowNo;
