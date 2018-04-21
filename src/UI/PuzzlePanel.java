@@ -1,5 +1,6 @@
 package UI;
 
+import Parser.Answers;
 import Parser.HTMLProcessor;
 import Solver.PuzzleSolver;
 
@@ -12,6 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class PuzzlePanel extends JPanel{
 	private static final int SCREEN_HEIGHT = 900;
@@ -35,6 +37,7 @@ public class PuzzlePanel extends JPanel{
 	private String fileToRead;
 	private ProgramLog log;
 	PuzzleSolver solver;
+	private Answers answers;
 
 	public PuzzlePanel() {
 		init();
@@ -73,7 +76,6 @@ public class PuzzlePanel extends JPanel{
 		this.setFocusable(true);
 		this.requestFocus();
 		input = new HTMLProcessor(); //HTML saver
-		repaint();
 		Dimension screen = new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT);
 		setVisible(true);
 		this.setPreferredSize(screen);
@@ -221,6 +223,7 @@ public class PuzzlePanel extends JPanel{
 	private void read(){
 		//public htmli fileToRead stringi ile çağırabiliriz
 		input.readPuzzle(fileToRead);
+		answers = new Answers(input);
 		log.addLog("Read puzzle is called for the file:" + fileToRead);
 		isRead = false;
 		fileToRead = "";
@@ -363,7 +366,7 @@ public class PuzzlePanel extends JPanel{
 		public void keyPressed(KeyEvent e) {
 			char c = e.getKeyChar();
 			if(isRead == true){
-				if((int) c == 8)
+				if((int) c == 8 || (int) c == 9)
 					if(fileToRead.length() == 0)
 						fileToRead = "";
 					else
@@ -372,7 +375,7 @@ public class PuzzlePanel extends JPanel{
 					fileToRead = fileToRead + c;
 			}
 			else {
-				if ((int) c == 8) {
+				if ((int) c == 8 || (int) c == 9) {
 					puzzle[selectedRectY][selectedRectX] = "";
 					return;
 				}
@@ -380,7 +383,8 @@ public class PuzzlePanel extends JPanel{
 				inp = inp.toUpperCase();
 				if (selectedRectX == -1 && selectedRectY == -1)
 					return;
-				puzzle[selectedRectY][selectedRectX] = inp;
+				if(inp.charAt(0) >= 'A' && inp.charAt(0) <= 'Z')
+					puzzle[selectedRectY][selectedRectX] = inp;
 			}
 			repaint();
 		}
@@ -403,5 +407,11 @@ public class PuzzlePanel extends JPanel{
 	}
 	public void addLogInLine(String input){
 		log.addLogSameLine(input);
+	}
+	public CellBlock[][] getPuzzle(){
+		return input.puzzle;
+	}
+	public ArrayList<String>[] getHints(){
+		return input.hints;
 	}
 }

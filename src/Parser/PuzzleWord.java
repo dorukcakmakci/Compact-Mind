@@ -1,6 +1,8 @@
 package Parser;
 
 public class PuzzleWord {
+    private int direction; // 0 ACROSS //1 DOWN
+    private int questionNo;
     private int colNo;
     private int rowNo;
     private int length;
@@ -8,15 +10,24 @@ public class PuzzleWord {
     private String buffer;
     private int start;
     private int end;
+    private int size;
 
-    public PuzzleWord(){
+    public PuzzleWord(int direction ,int colNo, int rowNo, int size, int questionNo, String hint){
+        this.direction = direction;
+        this.start = colNo;
+        this.end = rowNo;
+        this.size = size;
+        this.questionNo = questionNo;
+        this.hint = hint;
     }
 
-    public PuzzleWord( int colNo, int rowNo, int length, String hint){
+    public PuzzleWord( int colNo, int rowNo, int length, String hint, int loc, int questionNo){
         this.colNo = colNo;
         this.rowNo = rowNo;
         this.length = length;
         this.hint = hint;
+        this.direction = loc;
+        this.questionNo = questionNo;
         buffer = "";
         for (int i = 0; i < buffer.length(); i++)
             buffer += '?';
@@ -24,6 +35,7 @@ public class PuzzleWord {
 
     // Black squares corresponds to *
     // Unknown corresponds to ?
+    /*
     public PuzzleWord( int colNo, int rowNo, int length, String hint, int start, int end){
         this.colNo = colNo;
         this.rowNo = rowNo;
@@ -40,7 +52,7 @@ public class PuzzleWord {
             buffer += '?';
         }
     }
-
+    */
     public int getColNo() {
         return colNo;
     }

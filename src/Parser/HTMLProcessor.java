@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class HTMLProcessor{
 
+    // 0 ACROSS // 1 DOWN
     public ArrayList<String>[] hints;
     public CellBlock[][] puzzle;
-
 
     public HTMLProcessor() {
         hints = new ArrayList[2];
@@ -23,7 +23,9 @@ public class HTMLProcessor{
                 puzzle[i][j] = new CellBlock();
     }
 
-
+    public boolean isBlank(int x,int y){
+        return puzzle[x][y].getCurrentLetter().equals("-1");
+    }
     public void readPuzzle( String puzzleName){
         String content;
         StringBuilder contentBuilder = new StringBuilder();

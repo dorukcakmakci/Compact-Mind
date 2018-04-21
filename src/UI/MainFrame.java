@@ -5,6 +5,7 @@ import Parser.SeleniumConnection;
 import javax.swing.*;
 import java.awt.*;
 
+
 public class MainFrame extends JFrame{
 
 	private static final String SCREEN_TITLE = "Compact Mind";
@@ -29,7 +30,7 @@ public class MainFrame extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 		pack();
-		connection = new SeleniumConnection();
+		//connection = new SeleniumConnection();
 		try {
 			puzzle = new PuzzlePanel();
 		} catch (Exception e) {

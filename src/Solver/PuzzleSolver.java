@@ -1,8 +1,10 @@
 package Solver;
 
+
 import UI.CellBlock;
 import UI.PuzzlePanel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class PuzzleSolver {

@@ -3,8 +3,14 @@ package Solver;
 
 import Parser.PuzzleWord;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class MovieSearch {
@@ -17,7 +23,7 @@ public class MovieSearch {
         boolean movieCheck = false;
 
         if ( hint.contains("movie") || hint.contains("film") || hint.contains("imdb") || hint.contains("movies") ||
-                hint.contains("films") || hint.contains("actor") || hint.contains("Oscar") || hint.contains("tv")
+                hint.contains("films") || hint.contains("actor") || hint.contains("oscar") || hint.contains("tv")
                 ||hint.contains("series") || hint.contains("show"))
             movieCheck = true;
 
