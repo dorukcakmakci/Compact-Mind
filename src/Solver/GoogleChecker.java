@@ -14,7 +14,7 @@ public class GoogleChecker {
 	public static ArrayList<String> getGoogleSearch(String clue, int size) throws MalformedURLException, IOException{
 		Scanner scan;
 		String key="AIzaSyAVoL8InHjcBqyhgY4mECR_SAt7mH20zPY";
-		String key1 = "AIzaSyBqKGptcLGE4BEvy28GudE3nbMDIRc6Tdc";
+		String key1 = "AIzaSyA7s1cz1sZDnr9hk4WQhv43HvDucqKsP1Y";
 		scan = new Scanner(clue);
 		String qry = "";
 		ArrayList<String> a = new ArrayList<String>();

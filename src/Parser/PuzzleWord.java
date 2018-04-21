@@ -93,6 +93,8 @@ public class PuzzleWord {
         this.buffer = buffer;
     }
 
+
+
     public void updateCharAt( int index, char c){
         String tmp = "";
         for (int i = 0; i < getLength(); i++){
@@ -103,5 +105,25 @@ public class PuzzleWord {
             tmp += buffer.charAt(i);
         }
         buffer = tmp;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public int getQuestionNo() {
+        return questionNo;
+    }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
+    public int getSize() {
+        return size;
     }
 }

@@ -67,4 +67,8 @@ public class Answers {
             System.out.println("Direction down : " + startX + " ~ " + startY + " Size : "+ size + " Hint: "+hint);
         }
     }
+
+    public ArrayList<PuzzleWord> getAnswers() {
+        return answers;
+    }
 }

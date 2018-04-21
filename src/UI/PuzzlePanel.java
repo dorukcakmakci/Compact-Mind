@@ -393,12 +393,16 @@ public class PuzzlePanel extends JPanel{
 		public void keyTyped(KeyEvent e) {}
 	}
 
+
 	public void start() throws IOException {
 		System.out.println("Start called");
-		solver = new PuzzleSolver(input.hints, puzzle, input.puzzle, this);
+		solver = new PuzzleSolver(input.puzzle, puzzle, this);
 		solver.solvePuzzle();
 	}
 
+	public Answers getAnswers() {
+		return answers;
+	}
 	///////////////////////////
 	//KEYBOARD LISTENER END////
 	///////////////////////////

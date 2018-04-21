@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class MainFrame extends JFrame{
+public class MainFrame extends JFrame  {
 
 	private static final String SCREEN_TITLE = "Compact Mind";
 	private static final int SCREEN_WIDTH = 1200;
@@ -44,7 +44,10 @@ public class MainFrame extends JFrame{
 		repaint();
 	}
 
+
 	public static void main(String[] args) {
 		MainFrame f = new MainFrame();
 	}
+
+
 }

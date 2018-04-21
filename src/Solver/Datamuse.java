@@ -31,14 +31,30 @@ public class Datamuse
 		String json;
 		json = findSimilar(key);
 		if(json.equals("[]"))
-		{		}
+		{	}
 		else
 		{
-			System.out.println(json);
 			results = parser.parseWords(json, size);
-			scores = parser.parseScores(json);
+			//scores = parser.parseScores(json);
 		}
 		
+	}
+
+	public void checkStartEndMissing(String in, int size)
+	{
+		String json;
+		json = wordsStartingWithEndingWithVolTwo(in);
+
+		if(!results.isEmpty())
+			results.clear();
+
+		if(json.equals("[]"))
+		{	}
+		else
+		{
+			results = parser.parseWords(json, size);
+			//scores = parser.parseScores(json);
+		}
 	}
 
 	public String findSimilar(String word) {
@@ -63,6 +79,9 @@ public class Datamuse
 			sb.append("?");
 		}
 		return getJSON("http://api.datamuse.com/words?sp=" + startLetter + sb + endLetter);
+	}
+	public String wordsStartingWithEndingWithVolTwo(String in) {
+		return getJSON("http://api.datamuse.com/words?sp=" + in);
 	}
 
 	public String wordsStartingWithEndingWith(String startLetter, String endLetter) {
