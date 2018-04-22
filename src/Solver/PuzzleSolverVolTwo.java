@@ -104,6 +104,7 @@ public class PuzzleSolverVolTwo
             //TODO: isterseniz scoring, datamuse'un scoring'i commentli bug veriyordu.
             GoogleChecker googleChecker = new GoogleChecker();
             Datamuse datamuseChecker = new Datamuse();
+            ReverseDictionary reverseDictionaryChecker = new ReverseDictionary();
             for(int j = 0; j < 10; j++)
             {
                 String hint = panel.getAnswers().getAnswers().get(j).getHint();
@@ -113,6 +114,9 @@ public class PuzzleSolverVolTwo
                 datamuseChecker.checkDatamuse(hint, size);
                 panel.addLog("Checking google for hint : "+hint);
                 ArrayList<String> googleAnswers = GoogleChecker.getGoogleSearch(hint, size);
+                //CHECK
+                ArrayList<String> dictAnswers = ReverseDictionary.getReverseDict(hint, size);
+                //ArrayList<String> abbrevationAnswers = ;
                 ArrayList<String> datamuseAnswers = new ArrayList<String>();
                 if (!(Datamuse.results.isEmpty())) {
                     for (int i = 0; i < Datamuse.results.size(); i++) {
@@ -130,6 +134,13 @@ public class PuzzleSolverVolTwo
                 for (String gAns : googleAnswers) {
                     gAns = gAns.toUpperCase();
                     Word curr = new Word(gAns, false);
+                    if (!results[j].contains(curr))
+                        results[j].add(curr);
+                }
+
+                for (String dictAns : dictAnswers) {
+                    dictAns = dictAns.toUpperCase();
+                    Word curr = new Word(dictAns, false);
                     if (!results[j].contains(curr))
                         results[j].add(curr);
                 }
