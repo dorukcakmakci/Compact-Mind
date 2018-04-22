@@ -394,10 +394,19 @@ public class PuzzlePanel extends JPanel{
 	}
 
 
-	public void start() throws IOException {
+	public void start() {
 		System.out.println("Start called");
 		solver = new PuzzleSolver(input.puzzle, puzzle, this);
-		solver.solvePuzzle();
+		Thread solve = new Thread(){
+			public void run(){
+				try {
+					solver.solvePuzzle();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		solve.start();
 	}
 
 	public Answers getAnswers() {

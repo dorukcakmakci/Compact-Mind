@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PuzzleSolver implements Runnable{
+public class PuzzleSolver{
 
     private ArrayList<String>[] hints;
     private String [][] puzzle;
@@ -25,13 +25,6 @@ public class PuzzleSolver implements Runnable{
         for(int i = 1; i < 10; i++)
         {
             isDoneMap.put(i, false);
-        }
-    }
-    public void run(){
-        try {
-            solvePuzzle();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
     public void solvePuzzle() throws IOException {
