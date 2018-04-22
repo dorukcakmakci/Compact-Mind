@@ -44,6 +44,7 @@ public class PuzzleSolverVolTwo
     }
 
     public void solve() {
+
         reinit();
         for(PuzzleWord wd : panel.getAnswers().getAnswers())
         {

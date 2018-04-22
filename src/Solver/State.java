@@ -1,32 +1,34 @@
 package Solver;
 
-public class State {
+import Parser.Answers;
+import Parser.PuzzleWord;
+
+public class State implements Comparable{
     public static final int RECT_WIDTH = 5;
-    private char[][] puzzle;
+    private Answers answers;
     private double score;
-    public State(int score){
-        this.score = score;
-        this.puzzle = new char[RECT_WIDTH][RECT_WIDTH];
-        for(int i = 0; i < RECT_WIDTH;i++)
-            for(int j = 0; j < RECT_WIDTH;j++)
-                puzzle[i][j] = '?';
+    public State(Answers answers){
+        this.answers = answers;
+        setScore();
     }
-    public char getIndex(int i, int j){
-        return puzzle[i][j];
-    }
-    public void setIndex(int i, int j, char input){
-        puzzle[i][j] = input;
-    }
-    public char[][] getState(){
-        return puzzle;
-    }
-    public void setState(char[][] state){
-        this.puzzle = state;
+
+    public PuzzleWord getAnswer(int i) {
+        return answers.getAnswer(i);
     }
     public double getScore(){
         return score;
     }
-    public void setScore(double score){
-        this.score = score;
+    public void setScore(){
+        ///TO-DO
+        this.score = 0;
+    }
+    @Override
+    public int compareTo(Object o1){
+        State s1 = (State)o1;
+        if(this.getScore() > s1.getScore())
+            return 1;
+        if(this.getScore() == s1.getScore())
+            return 0;
+        return -1;
     }
 }
