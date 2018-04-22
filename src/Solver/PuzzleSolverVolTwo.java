@@ -1,46 +1,31 @@
 package Solver;
 
 import Parser.PuzzleWord;
-import UI.CellBlock;
 import UI.PuzzlePanel;
-
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PuzzleSolverVolTwo
 {
-    private ArrayList<String>[] hints;
     private String [][] puzzle;
-    private CellBlock[][] puzzle2;
-    private int[][] letterUsed;
-    private String [][] originalPuzzle;
-    private QuestionPriorityChecker questionChecker;
     private PuzzlePanel panel;
-    private HashMap<Integer,Boolean> isDoneMap;
     private int numBacktracks;
     private int slot_amount;
     private boolean isDataCallDone;
     private ArrayList<Word>[] results;
-    public PuzzleSolverVolTwo(CellBlock [][] puzzle2, String[][] puzzle, PuzzlePanel panel)
+
+    public PuzzleSolverVolTwo(String[][] puzzle, PuzzlePanel panel)
     {
         this.panel = panel;
-        this.puzzle2 = puzzle2;
         this.puzzle = puzzle;
-        isDoneMap = new HashMap<Integer, Boolean>();
-        isDataCallDone = false;
-        for(int i = 1; i < 10; i++)
-        {
-            isDoneMap.put(i, false);
-        }
-        slot_amount = 0;
 
+        isDataCallDone = false;
+        slot_amount = 0;
         for(PuzzleWord wrd : panel.getAnswers().getAnswers())
         {
             slot_amount++;
         }
-         results = new ArrayList[10];
+        results = new ArrayList[10];
         for (int i = 0; i < 10; i++) {
             results[i] = new ArrayList<Word>();
         }
@@ -49,7 +34,7 @@ public class PuzzleSolverVolTwo
 
     private void reinit()
     {
-        letterUsed = new int[5][5];
+
         numBacktracks = 0;
         for (int i = 0; i < 10; i++) {
             results[i].clear();
@@ -59,7 +44,6 @@ public class PuzzleSolverVolTwo
 
     public void solve() {
         reinit();
-        boolean flag = false;
         for(PuzzleWord wd : panel.getAnswers().getAnswers())
         {
             System.out.println(wd.getHint());
@@ -83,9 +67,8 @@ public class PuzzleSolverVolTwo
             return true;
         }
 
-        int q_no = (panel.getAnswers().getAnswers().get(q_index).getQuestionNo());
-        int question_x_index = (panel.getAnswers().getAnswers().get(q_index)).getEnd();
-        int question_y_index = (panel.getAnswers().getAnswers().get(q_index)).getStart();
+        int question_x_index = (panel.getAnswers().getAnswers().get(q_index)).getStart();
+        int question_y_index = (panel.getAnswers().getAnswers().get(q_index)).getEnd();
         boolean isDown;
 
         ArrayList<Word> words = new ArrayList<Word>();
@@ -101,14 +84,12 @@ public class PuzzleSolverVolTwo
 
         for(Word word : words)
         {
-            System.out.println(question_x_index +" " + question_y_index);
+
             if(isPuttable(word, question_x_index, question_y_index, isDown ))
             {
-
                 putWord(word,question_x_index, question_y_index, isDown);
                 if(fillPuzzle(slot + 1, q_index+1))
                     return true;
-
                 removeWord(word,question_x_index, question_y_index, isDown);
             }
         }
@@ -120,6 +101,8 @@ public class PuzzleSolverVolTwo
     {
         if(!isDataCallDone)
         {
+            //TODO: Datamuse ve Google gibi abbr ve imdb eklencek.
+            //TODO: isterseniz scoring, datamuse'un scoring'i commentli bug veriyordu.
             GoogleChecker googleChecker = new GoogleChecker();
             Datamuse datamuseChecker = new Datamuse();
             for(int j = 0; j < 10; j++)
@@ -137,18 +120,20 @@ public class PuzzleSolverVolTwo
                     }
 
                 }
-                for (String gAns : googleAnswers) {
-                    gAns = gAns.toUpperCase();
-                    Word curr = new Word(gAns, false);
-                    if (!results[j].contains(curr))
-                        results[j].add(curr);
-                }
                 for (String dAns : datamuseAnswers) {
                     dAns = dAns.toUpperCase();
                     Word curr = new Word(dAns, false);
                     if (!results[j].contains(curr))
                         results[j].add(curr);
                 }
+
+                for (String gAns : googleAnswers) {
+                    gAns = gAns.toUpperCase();
+                    Word curr = new Word(gAns, false);
+                    if (!results[j].contains(curr))
+                        results[j].add(curr);
+                }
+
             }
             isDataCallDone = true;
         }
@@ -158,14 +143,13 @@ public class PuzzleSolverVolTwo
 
     private void putWord(Word w, int question_x_index, int question_y_index, boolean isDown)
     {
-        if(isDown)
+        if(!isDown) //across
         {
             int letter_counter = 0;
             for(int i = question_x_index; i < w.getWord().length()+question_x_index; i++)
             {
                 puzzle[i][question_y_index] = w.getWord().charAt(letter_counter) + "";
-                panel.addLogInLine(puzzle[i][question_y_index]);
-                letterUsed[i][question_y_index] = 1;
+                panel.addLog(puzzle[i][question_y_index]);
                 letter_counter++;
             }
         }
@@ -175,28 +159,23 @@ public class PuzzleSolverVolTwo
             for(int i = question_y_index; i < w.getWord().length()+question_y_index; i++)
             {
                 puzzle[question_x_index][i] = w.getWord().charAt(letter_counter) + "";
-                panel.addLogInLine(puzzle[question_x_index][i]);
-                letterUsed[question_x_index][i] = 1;
+                panel.addLog(puzzle[question_x_index][i]);
                 letter_counter++;
             }
         }
-        System.out.println(w.getWord());
+
         w.setUsed(true);
-        printPuzzle();
+
     }
 
     private void removeWord(Word w, int question_x_index, int question_y_index, boolean isDown)
     {
-        if(isDown)
+        if(!isDown)
         {
-
             for(int i = question_x_index; i < w.getWord().length()+question_x_index; i++)
             {
-
                 puzzle[i][question_y_index] = "";
-                panel.addLogInLine(puzzle[i][question_y_index]);
-                letterUsed[i][question_y_index] = 0;
-
+                panel.addLog(puzzle[i][question_y_index]);
             }
         }
         else
@@ -204,8 +183,7 @@ public class PuzzleSolverVolTwo
             for(int i = question_y_index; i < w.getWord().length() + question_y_index; i++)
             {
                 puzzle[question_x_index][i] =  "";
-                panel.addLogInLine(puzzle[question_x_index][i]);
-                letterUsed[question_x_index][i] = 0;
+                panel.addLog(puzzle[question_x_index][i]);
             }
         }
         w.setUsed(false);
@@ -216,7 +194,20 @@ public class PuzzleSolverVolTwo
         if(w.getUsed())
             return false;
 
-        if(!isDown)
+        if(!isDown) //across
+        {
+            int letter_counter = 0;
+            for(int i = question_x_index; i < w.getWord().length()+question_x_index; i++)
+            {
+                String currLetter = w.getWord().charAt(letter_counter) + "";
+                if(!puzzle[i][question_y_index].equals("") && !puzzle[i][question_y_index].equals(currLetter) )
+                {
+                    return false;
+                }
+                letter_counter++;
+            }
+        }
+        else
         {
             int letter_counter = 0;
             for(int i = question_y_index; i < w.getWord().length() + question_y_index; i++)
@@ -229,20 +220,6 @@ public class PuzzleSolverVolTwo
                 letter_counter++;
             }
 
-        }
-        else
-        {
-            int letter_counter = 0;
-            for(int i = question_x_index; i < w.getWord().length()+question_x_index; i++)
-            {
-                String currLetter = w.getWord().charAt(letter_counter) + "";
-                if(!puzzle[i][question_y_index].equals("") && !puzzle[i][question_y_index].equals(currLetter) )
-                {
-
-                    return false;
-                }
-                letter_counter++;
-            }
         }
         return true;
     }

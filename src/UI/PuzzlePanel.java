@@ -393,7 +393,7 @@ public class PuzzlePanel extends JPanel{
 
 	public void start() {
 		System.out.println("Start called");
-		solver = new PuzzleSolverVolTwo(input.puzzle, puzzle, this);
+		solver = new PuzzleSolverVolTwo( puzzle, this);
 		Thread solve = new Thread(){
 			public void run(){
 				solver.solve();

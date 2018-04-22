@@ -24,6 +24,9 @@ public class JSONParse {
 			curr = (String) ((Map)al.get(i)).get("word");
 			if((curr.length() == size))
 			{
+				curr.replaceAll("\"", "");
+				curr.replaceAll("!", "");
+                curr.replaceAll("\\?", "");
 				results.add(curr);
 			}
 		}
