@@ -3,13 +3,13 @@ package Parser;
 import java.util.ArrayList;
 
 public class Answers {
-
+    private static final int RECT_SIZE = 5;
     private HTMLProcessor processor;
     private ArrayList<PuzzleWord> answers;
 
     public Answers(HTMLProcessor processor){
         this.processor = processor;
-        answers = new ArrayList<PuzzleWord>();
+        this.answers = new ArrayList<PuzzleWord>();
         initAnswers();
     }
     private void initAnswers(){
@@ -67,8 +67,10 @@ public class Answers {
             System.out.println("Direction down : " + startX + " ~ " + startY + " Size : "+ size + " Hint: "+hint);
         }
     }
-
     public ArrayList<PuzzleWord> getAnswers() {
         return answers;
+    }
+    public PuzzleWord getAnswer(int answerNo){
+        return answers.get(answerNo);
     }
 }

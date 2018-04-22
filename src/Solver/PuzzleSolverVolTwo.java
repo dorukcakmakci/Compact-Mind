@@ -2,6 +2,7 @@ package Solver;
 
 import Parser.PuzzleWord;
 import UI.PuzzlePanel;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -77,10 +78,7 @@ public class PuzzleSolverVolTwo
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(panel.getAnswers().getAnswers().get(q_index).getDirection() == 0)
-            isDown = false;
-        else
-            isDown = true;
+        isDown = panel.getAnswers().getAnswers().get(q_index).getDirection() != 0;
 
         for(Word word : words)
         {
@@ -112,6 +110,7 @@ public class PuzzleSolverVolTwo
                 int q_no = panel.getAnswers().getAnswers().get(j).getQuestionNo();
 
                 datamuseChecker.checkDatamuse(hint, size);
+                panel.addLog("Checking google for hint : "+hint);
                 ArrayList<String> googleAnswers = GoogleChecker.getGoogleSearch(hint, size);
                 ArrayList<String> datamuseAnswers = new ArrayList<String>();
                 if (!(Datamuse.results.isEmpty())) {
@@ -149,7 +148,7 @@ public class PuzzleSolverVolTwo
             for(int i = question_x_index; i < w.getWord().length()+question_x_index; i++)
             {
                 puzzle[i][question_y_index] = w.getWord().charAt(letter_counter) + "";
-                panel.addLog(puzzle[i][question_y_index]);
+                //panel.addLog(puzzle[i][question_y_index]);
                 letter_counter++;
             }
         }
@@ -159,7 +158,7 @@ public class PuzzleSolverVolTwo
             for(int i = question_y_index; i < w.getWord().length()+question_y_index; i++)
             {
                 puzzle[question_x_index][i] = w.getWord().charAt(letter_counter) + "";
-                panel.addLog(puzzle[question_x_index][i]);
+                //panel.addLog(puzzle[question_x_index][i]);
                 letter_counter++;
             }
         }
@@ -175,7 +174,7 @@ public class PuzzleSolverVolTwo
             for(int i = question_x_index; i < w.getWord().length()+question_x_index; i++)
             {
                 puzzle[i][question_y_index] = "";
-                panel.addLog(puzzle[i][question_y_index]);
+                //panel.addLog(puzzle[i][question_y_index]);
             }
         }
         else
@@ -183,7 +182,7 @@ public class PuzzleSolverVolTwo
             for(int i = question_y_index; i < w.getWord().length() + question_y_index; i++)
             {
                 puzzle[question_x_index][i] =  "";
-                panel.addLog(puzzle[question_x_index][i]);
+                //panel.addLog(puzzle[question_x_index][i]);
             }
         }
         w.setUsed(false);

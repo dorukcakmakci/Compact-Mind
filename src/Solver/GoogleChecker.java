@@ -4,19 +4,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GoogleChecker {
 
-	public static ArrayList<String> getGoogleSearch(String clue, int size) throws MalformedURLException, IOException{
+	public static ArrayList<String> getGoogleSearch(String clue, int size) throws IOException{
 		Scanner scan;
 		String key="AIzaSyAVoL8InHjcBqyhgY4mECR_SAt7mH20zPY";
 		String key1 = "AIzaSyAR8O8Qt2L-WKm_M9yZkTzkM0vas--z4-k";
+		String key2 = "AIzaSyAZ2gSJ0YzVW73aWvhgFH2GHmjSJm8YmX4";
 		String seq = "\\w";
 		System.out.println("google checker called " );
 		Pattern pattern = Pattern.compile(seq);
@@ -31,7 +30,7 @@ public class GoogleChecker {
 			qry += temp + "+";
 		}
 		URL url = new URL(
-				"https://www.googleapis.com/customsearch/v1?key="+key1+ "&cx=013036536707430787589:_pqjad5hr1a&q="+ qry + "&alt=json");
+				"https://www.googleapis.com/customsearch/v1?key="+key2+ "&cx=013036536707430787589:_pqjad5hr1a&q="+ qry + "&alt=json");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
 		conn.setRequestProperty("Accept", "application/json");
