@@ -13,11 +13,9 @@ public class GoogleChecker {
 
 	public static ArrayList<String> getGoogleSearch(String clue, int size) throws IOException{
 		Scanner scan;
-		String key="AIzaSyAVoL8InHjcBqyhgY4mECR_SAt7mH20zPY";
-		String key1 = "AIzaSyAR8O8Qt2L-WKm_M9yZkTzkM0vas--z4-k";
-		String key2 = "AIzaSyAZ2gSJ0YzVW73aWvhgFH2GHmjSJm8YmX4";
+		String key = "AIzaSyCaw5gV94cdilfT5YeCfL7wVufICYO4_TY";
 		String seq = "\\w";
-		System.out.println("google checker called " );
+		//System.out.println("google checker called " );
 		Pattern pattern = Pattern.compile(seq);
 		scan = new Scanner(clue);
 		String qry = "";
@@ -30,7 +28,7 @@ public class GoogleChecker {
 			qry += temp + "+";
 		}
 		URL url = new URL(
-				"https://www.googleapis.com/customsearch/v1?key="+key2+ "&cx=013036536707430787589:_pqjad5hr1a&q="+ qry + "&alt=json");
+				"https://www.googleapis.com/customsearch/v1?key="+key+ "&cx=013036536707430787589:_pqjad5hr1a&q="+ qry + "&alt=json");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
 		conn.setRequestProperty("Accept", "application/json");

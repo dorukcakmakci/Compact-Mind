@@ -69,8 +69,8 @@ public class PuzzleSolverVolTwo
             return true;
         }
 
-        int question_x_index = (panel.getAnswers().getAnswers().get(q_index)).getStart();
-        int question_y_index = (panel.getAnswers().getAnswers().get(q_index)).getEnd();
+        int question_x_index = (panel.getAnswers().getAnswers().get(q_index)).getColNo();
+        int question_y_index = (panel.getAnswers().getAnswers().get(q_index)).getRowNo();
         boolean isDown;
 
         ArrayList<Word> words = new ArrayList<Word>();

@@ -43,7 +43,7 @@ public class SeleniumConnection {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int month = cal.get(Calendar.MONTH) + 1;
-        int day = cal.get( Calendar.DAY_OF_WEEK) + 2;
+        int day = cal.get( Calendar.DAY_OF_MONTH);
         int year = cal.get( Calendar.YEAR);
         System.out.println(month+","+day+","+year);
         String puzzlePath = "./ph/reveal-" + month + "-" + day + "-" + year + ".txt";
