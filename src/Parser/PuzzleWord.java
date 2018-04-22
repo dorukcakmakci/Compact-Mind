@@ -7,6 +7,8 @@ public class PuzzleWord {
     private int rowNo;
     private int length;
     private String hint;
+    private char[] answer; //// "-" for no input
+    //////////////////////
     private String buffer;
     private int start;
     private int end;
@@ -19,8 +21,21 @@ public class PuzzleWord {
         this.size = size;
         this.questionNo = questionNo;
         this.hint = hint;
+        this.answer = new char[size];
     }
-
+    public void updateAnswer(String inp){
+        answer = inp.toCharArray();
+    }
+    public void updateAnswerLetter(char inp, int index){
+        answer[index] = inp;
+    }
+    public char getAnswerLetter(int index){
+        return answer[index];
+    }
+    public String getAnswer(){
+        return answer.toString();
+    }
+    /////////////////////
     public PuzzleWord( int colNo, int rowNo, int length, String hint, int loc, int questionNo){
         this.colNo = colNo;
         this.rowNo = rowNo;

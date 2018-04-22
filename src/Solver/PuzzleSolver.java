@@ -17,6 +17,7 @@ public class PuzzleSolver{
     private PuzzlePanel panel;
     private HashMap<Integer,Boolean> isDoneMap;
 
+
     public PuzzleSolver(CellBlock [][] puzzle2, String[][] puzzle, PuzzlePanel panel) {
         this.panel = panel;
         this.puzzle2 = puzzle2;
@@ -28,6 +29,7 @@ public class PuzzleSolver{
         }
     }
     public void solvePuzzle() throws IOException {
+
         ArrayList<String> order = new ArrayList<String>();
 
         GoogleChecker googleChecker = new GoogleChecker();
