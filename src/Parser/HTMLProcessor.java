@@ -113,12 +113,10 @@ public class HTMLProcessor{
             int cellLetterNoIndex = tempContent.indexOf(cellLetterNo);
             //
             int cellLetterIndex = tempContent.indexOf(cellLetterPattern);
-
-
             if(cellEmptyIndex == -1){ //cell empty parse
 
             }
-            else if(cellEmptyIndex < cellLetterIndex && cellEmptyIndex < cellLetterNoIndex && cellEmptyIndex != -1){
+            else if((cellLetterIndex == -1 && cellLetterNoIndex == -1 && cellEmptyIndex != -1) || (cellEmptyIndex < cellLetterIndex && cellEmptyIndex < cellLetterNoIndex && cellEmptyIndex != -1)){
                 puzzle[i][j].setQuestionNo("");
                 puzzle[i][j].setCurrentLetter("-1"); //-1 for blank
                 tempContent = tempContent.substring(cellEmptyIndex + 11);

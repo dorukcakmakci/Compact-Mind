@@ -38,7 +38,7 @@ public class Answers {
             }
             PuzzleWord temp = new PuzzleWord(0,startX,startY,size,Integer.parseInt(questionNo),hint);
             answers.add(temp);
-            System.out.println("Direction up : " + startX + " ~ " + startY + " Size : "+ size + " Hint: "+hint);
+            System.out.println("Direction across : " + startX + " ~ " + startY + " Size : "+ size + " Hint: "+hint);
         }
         //DOWN
         for(int i = 0; i < processor.hints[1].size();i++){

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PuzzleSolver {
+public class PuzzleSolver implements Runnable{
 
     private ArrayList<String>[] hints;
     private String [][] puzzle;
@@ -27,7 +27,13 @@ public class PuzzleSolver {
             isDoneMap.put(i, false);
         }
     }
-
+    public void run(){
+        try {
+            solvePuzzle();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void solvePuzzle() throws IOException {
         ArrayList<String> order = new ArrayList<String>();
 
@@ -57,10 +63,7 @@ public class PuzzleSolver {
             System.out.println("------------------------------");
             boolean isDown;
 
-            if(panel.getAnswers().getAnswers().get(start_question).getDirection() == 0)
-                isDown = false;
-            else
-                isDown = true;
+            isDown = panel.getAnswers().getAnswers().get(start_question).getDirection() != 0;
 
 
             datamuseChecker.checkDatamuse(hint,size);
