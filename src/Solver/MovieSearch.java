@@ -14,12 +14,12 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class MovieSearch {
-    public static ArrayList<String> search( PuzzleWord puzzleWord) throws IOException {
+    public static ArrayList<String> search( String hint, int size) throws IOException {
         ArrayList<String> answers = new ArrayList<String>();
         String API_KEY = "9e3d7f60";
         String[] searchAdresses = { "http://www.omdbapi.com/?t=SEARCH_KEY&plot=full&apikey=",
                 "\"http://www.omdbapi.com/?s=SEARCH_KEY&plot=full&apikey=\""};
-        String hint = puzzleWord.getHint().toLowerCase();
+        hint = hint.toLowerCase();
         boolean movieCheck = false;
 
         if ( hint.contains("movie") || hint.contains("film") || hint.contains("imdb") || hint.contains("movies") ||
@@ -92,7 +92,7 @@ public class MovieSearch {
                     String[] results = ans.split("\\s+");
 
                     for (String res: results){
-                        if (res.length() == puzzleWord.getLength())
+                        if (res.length() == size)
                             answers.add(res);
                     }
                 }
