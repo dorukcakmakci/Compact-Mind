@@ -3,6 +3,7 @@ package UI;
 import Parser.Answers;
 import Parser.HTMLProcessor;
 import Solver.PuzzleSolver;
+import Solver.PuzzleSolverVolTwo;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -36,7 +37,7 @@ public class PuzzlePanel extends JPanel{
 	private int selectedRectY = -1;
 	private String fileToRead;
 	private ProgramLog log;
-	PuzzleSolver solver;
+	PuzzleSolverVolTwo solver;
 	private Answers answers;
 
 	public PuzzlePanel() {
@@ -251,11 +252,7 @@ public class PuzzlePanel extends JPanel{
 			mouseX = e.getX();
 			mouseY = e.getY();
 			if(mouseX >= 600 && mouseY >= 620 && mouseX <= 675 && mouseY <= 685){
-				try {
-					start();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				start();
 				isRead = false;
 				mouseX = 0;
 				mouseY = 0;
@@ -396,14 +393,10 @@ public class PuzzlePanel extends JPanel{
 
 	public void start() {
 		System.out.println("Start called");
-		solver = new PuzzleSolver(input.puzzle, puzzle, this);
+		solver = new PuzzleSolverVolTwo(input.puzzle, puzzle, this);
 		Thread solve = new Thread(){
 			public void run(){
-				try {
-					solver.solvePuzzle();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				solver.solve();
 			}
 		};
 		solve.start();

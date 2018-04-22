@@ -8,13 +8,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GoogleChecker {
 
 	public static ArrayList<String> getGoogleSearch(String clue, int size) throws MalformedURLException, IOException{
 		Scanner scan;
 		String key="AIzaSyAVoL8InHjcBqyhgY4mECR_SAt7mH20zPY";
-		String key1 = "AIzaSyA7s1cz1sZDnr9hk4WQhv43HvDucqKsP1Y";
+		String key1 = "AIzaSyAR8O8Qt2L-WKm_M9yZkTzkM0vas--z4-k";
+		String seq = "\\w";
+		System.out.println("google checker called " );
+		Pattern pattern = Pattern.compile(seq);
 		scan = new Scanner(clue);
 		String qry = "";
 		ArrayList<String> a = new ArrayList<String>();
@@ -48,8 +53,11 @@ public class GoogleChecker {
 			String addable = "";
 			while(search!= "" && scan.hasNext()){
 				addable = scan.next();
-				if(addable.length() == size && !a.contains(addable))// && !a.contains(addable))
-					a.add(addable);
+				if(addable.length() == size)// && !a.contains(addable))
+				{
+
+						a.add(addable);
+				}
 			}
 		}
 		conn.disconnect();

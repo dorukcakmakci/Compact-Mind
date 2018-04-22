@@ -59,6 +59,7 @@ public class Datamuse
 
 	public String findSimilar(String word) {
 		String s = word.replaceAll(" ", "+");
+		System.out.println(s);
 		return getJSON("http://api.datamuse.com/words?rd="+s);
 
 	}
