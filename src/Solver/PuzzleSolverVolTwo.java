@@ -22,6 +22,7 @@ public class PuzzleSolverVolTwo
     private int numBacktracks;
     private int slot_amount;
     private boolean isDataCallDone;
+    private ArrayList<Word>[] results;
     public PuzzleSolverVolTwo(CellBlock [][] puzzle2, String[][] puzzle, PuzzlePanel panel)
     {
         this.panel = panel;
@@ -39,6 +40,10 @@ public class PuzzleSolverVolTwo
         {
             slot_amount++;
         }
+         results = new ArrayList[10];
+        for (int i = 0; i < 10; i++) {
+            results[i] = new ArrayList<Word>();
+        }
 
     }
 
@@ -46,6 +51,10 @@ public class PuzzleSolverVolTwo
     {
         letterUsed = new int[5][5];
         numBacktracks = 0;
+        for (int i = 0; i < 10; i++) {
+            results[i].clear();
+        }
+        isDataCallDone = false;
     }
 
     public void solve() {
@@ -109,43 +118,43 @@ public class PuzzleSolverVolTwo
 
     private ArrayList<Word> getWords(int start_question) throws IOException
     {
-        ArrayList<String>[] googleResults;
-        GoogleChecker googleChecker = new GoogleChecker();
-        Datamuse datamuseChecker = new Datamuse();
-        String hint = panel.getAnswers().getAnswers().get(start_question).getHint();
-        int size = panel.getAnswers().getAnswers().get(start_question).getSize();
-        int q_no = panel.getAnswers().getAnswers().get(start_question).getQuestionNo();
+        if(!isDataCallDone)
+        {
+            GoogleChecker googleChecker = new GoogleChecker();
+            Datamuse datamuseChecker = new Datamuse();
+            for(int j = 0; j < 10; j++)
+            {
+                String hint = panel.getAnswers().getAnswers().get(j).getHint();
+                int size = panel.getAnswers().getAnswers().get(j).getSize();
+                int q_no = panel.getAnswers().getAnswers().get(j).getQuestionNo();
 
+                datamuseChecker.checkDatamuse(hint, size);
+                ArrayList<String> googleAnswers = GoogleChecker.getGoogleSearch(hint, size);
+                ArrayList<String> datamuseAnswers = new ArrayList<String>();
+                if (!(Datamuse.results.isEmpty())) {
+                    for (int i = 0; i < Datamuse.results.size(); i++) {
+                        datamuseAnswers.add(Datamuse.results.get(i));
+                    }
 
-
-        datamuseChecker.checkDatamuse(hint,size);
-        ArrayList<String> googleAnswers = GoogleChecker.getGoogleSearch(hint, size);
-        ArrayList<String> datamuseAnswers = new ArrayList<String>();
-        ArrayList<Word> answers = new ArrayList<Word>();
-        if(!(Datamuse.results.isEmpty())) {
-            for (int i = 0; i < Datamuse.results.size(); i++) {
-                datamuseAnswers.add(Datamuse.results.get(i));
+                }
+                for (String gAns : googleAnswers) {
+                    gAns = gAns.toUpperCase();
+                    Word curr = new Word(gAns, false);
+                    if (!results[j].contains(curr))
+                        results[j].add(curr);
+                }
+                for (String dAns : datamuseAnswers) {
+                    dAns = dAns.toUpperCase();
+                    Word curr = new Word(dAns, false);
+                    if (!results[j].contains(curr))
+                        results[j].add(curr);
+                }
             }
-
+            isDataCallDone = true;
         }
 
-
-        for (String gAns: googleAnswers)
-        {
-            gAns = gAns.toUpperCase();
-            Word curr = new Word(gAns, false);
-            if(!answers.contains(curr))
-                answers.add(curr);
-        }
-        for (String dAns : datamuseAnswers)
-        {
-            dAns = dAns.toUpperCase();
-            Word curr = new Word(dAns, false);
-            if(!answers.contains(curr))
-                answers.add(curr);
-        }
-        return answers;
-    }
+        return results[start_question];
+}
 
     private void putWord(Word w, int question_x_index, int question_y_index, boolean isDown)
     {
