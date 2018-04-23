@@ -6,12 +6,13 @@ import java.util.PriorityQueue;
 
 public class StateUpdater {
     PriorityQueue stateQueue;
+    State maxState;
     public StateUpdater(){
        stateQueue = new PriorityQueue();
     }
 
 
-    public State checkState(Answers answers){
+    public boolean checkState(Answers answers){
         boolean flag = true;
         State stateToAdd = new State(answers); //
         char [][] puzzle = new char[5][5];
@@ -36,13 +37,16 @@ public class StateUpdater {
                 if(!flag) {
                     break;
                 }
-
             }
         }
-        stateQueue.add(stateToAdd);
-        if(flag)
-            return stateToAdd;
-        return null;
+        //stateQueue.add(stateToAdd);
+        if(maxState == null)
+            maxState = stateToAdd;
+        else{
+            if(maxState.getScore() < stateToAdd.getScore())
+                maxState = stateToAdd;
+        }
+        return flag;
     }
 }
 

@@ -16,8 +16,8 @@ public class PuzzleWord {
 
     public PuzzleWord(int direction ,int colNo, int rowNo, int size, int questionNo, String hint){
         this.direction = direction;
-        this.start = colNo;
-        this.end = rowNo;
+        this.colNo = colNo;
+        this.rowNo = rowNo;
         this.size = size;
         this.questionNo = questionNo;
         this.hint = hint;
@@ -128,14 +128,6 @@ public class PuzzleWord {
 
     public int getQuestionNo() {
         return questionNo;
-    }
-
-    public int getStart() {
-        return start;
-    }
-
-    public int getEnd() {
-        return end;
     }
 
     public int getSize() {
