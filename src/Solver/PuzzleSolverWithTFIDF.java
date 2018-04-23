@@ -22,6 +22,7 @@ public class PuzzleSolverWithTFIDF {
     private ArrayList<String>[] googleResults;
     //private ArrayList<String>[] abbreviationResults;
     private ArrayList<String>[] movieResults;
+    private ArrayList<String>[] reverseDictionaryResults;
     private ArrayList<ScoredString>[] scores;
 
     public PuzzleSolverWithTFIDF(String[][] puzzle, PuzzlePanel panel){
@@ -37,6 +38,7 @@ public class PuzzleSolverWithTFIDF {
         datamuseResults = new ArrayList[slotAmount];
         googleResults = new ArrayList[slotAmount];
         movieResults = new ArrayList[slotAmount];
+        reverseDictionaryResults = new ArrayList[slotAmount];
         //abbreviationResults = new ArrayList[curState.getAnswersSize()];
         scores = new ArrayList[slotAmount];
 
@@ -64,29 +66,76 @@ public class PuzzleSolverWithTFIDF {
 
 
             movieResults[i] = MovieSearch.search(hint, size);
+            reverseDictionaryResults[i] = ReverseDictionary.getReverseDict( hint, size);
 
-            tfidf[i] = new TFIDF(googleResults[i], datamuseResults[i], movieResults[i]);
+            tfidf[i] = new TFIDF(googleResults[i], datamuseResults[i], movieResults[i], reverseDictionaryResults[i]);
 
-            for ( String s: googleResults[i]){
-                ScoredString scoredString = new ScoredString();
-                scoredString.result = s.toLowerCase();
-                scoredString.score = (tfidf[i]).tfIdf(s) * 100000;
-                scores[i].add( scoredString);
-            }
-            for ( String s: datamuseResults[i]){
-                ScoredString scoredString = new ScoredString();
-                scoredString.result = s.toLowerCase();
-                scoredString.score = tfidf[i].tfIdf(s) * 100000;
-                scores[i].add( scoredString);
+            double scorePriority = 0;
 
-            }
+            scorePriority = 0;
             for ( String s: movieResults[i]){
                 ScoredString scoredString = new ScoredString();
                 scoredString.result = s.toLowerCase();
-                scoredString.score = tfidf[i].tfIdf(s) * 100000;
-                scores[i].add( scoredString);
+                scoredString.score = ((tfidf[i]).tfIdf(s) + scorePriority) * 10;
+                scorePriority -= 0.001;
+                if (!scores[i].contains( scoredString))
+                    scores[i].add( scoredString);
 
             }
+
+            scorePriority = 0;
+            int in = 0;
+            for ( String s: datamuseResults[i]){
+                System.out.println( "index " + in + ": " + s);
+                ScoredString scoredString = new ScoredString();
+                scoredString.result = s.toLowerCase();
+                scoredString.score = ((tfidf[i]).tfIdf(s) + scorePriority) * 10;
+                scorePriority -= 0.002;
+                if (!scores[i].contains( scoredString))
+                 scores[i].add( scoredString);
+                else{
+                    int index = scores[i].indexOf(scoredString);
+                    ScoredString ss = scores[i].get(index);
+                    ss.score += 10;
+                }
+                in++;
+            }
+
+            in = 0;
+            scorePriority = 0;
+            for ( String s: reverseDictionaryResults[i]){
+                ScoredString scoredString = new ScoredString();
+                scoredString.result = s.toLowerCase();
+                scoredString.score = ((tfidf[i]).tfIdf(s) + scorePriority) * 10;
+                scorePriority -= 0.003;
+                if (!scores[i].contains( scoredString))
+                 scores[i].add( scoredString);
+                else{
+                    int index = scores[i].indexOf(scoredString);
+                    ScoredString ss = scores[i].get(index);
+                    ss.score += 0.1;
+                }
+                in++;
+            }
+
+
+            scorePriority = 0;
+            in = 0;
+            for ( String s: googleResults[i]){
+                ScoredString scoredString = new ScoredString();
+                scoredString.result = s.toLowerCase();
+                scoredString.score = ((tfidf[i]).tfIdf(s) + scorePriority) * 10;
+                scorePriority -= 0.005;
+                if (!scores[i].contains( scoredString))
+                    scores[i].add( scoredString);
+                else{
+                    int index = scores[i].indexOf(scoredString);
+                    ScoredString ss = scores[i].get(index);
+                    ss.score += 0.25;
+                }
+                in++;
+            }
+
             ScoredString min = null;
             double minVal = 0;
             try {
@@ -104,16 +153,7 @@ public class PuzzleSolverWithTFIDF {
 
             String oldString = "";
             for ( int m = 0; m < scores[i].size(); m++){
-                if( scores[i].get(m).result.equalsIgnoreCase(oldString) || scores[i].get(m).result.contains("\\n")
-                        || scores[i].get(m).result.contains("(") || scores[i].get(m).result.contains(")") ||
-                        scores[i].get(m).result.contains("?") || scores[i].get(m).result.contains("+") ||
-                        scores[i].get(m).result.contains("-") || scores[i].get(m).result.contains("\\") ||
-                        scores[i].get(m).result.contains(":") || scores[i].get(m).result.contains("!") ||
-                        scores[i].get(m).result.contains("\"") || scores[i].get(m).result.contains(";") ||
-                        scores[i].get(m).result.contains("\\s+") || scores[i].get(m).result.contains("&") ||
-                        scores[i].get(m).result.contains("”") || scores[i].get(m).result.contains("“")
-                        || scores[i].get(m).result.contains(" ") || scores[i].get(m).result.contains(" ")
-                        ) {
+                if (  scores[i].get(m).result.equalsIgnoreCase(oldString) || !(scores[i].get(m).result.matches("[a-zA-Z0-9]*"))){
                     scores[i].remove(m);
                     m--;
                 }else{
@@ -158,5 +198,12 @@ class ScoredString implements Comparable{
         if ( this.score < ((ScoredString)o).score)
             return -1;
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if( this.result.equalsIgnoreCase(((ScoredString)obj).result))
+            return true;
+        return false;
     }
 }
