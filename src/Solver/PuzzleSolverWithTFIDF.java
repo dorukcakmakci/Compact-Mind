@@ -5,6 +5,7 @@ import UI.PuzzlePanel;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 
 public class PuzzleSolverWithTFIDF {
 
@@ -86,8 +87,16 @@ public class PuzzleSolverWithTFIDF {
                 scores[i].add( scoredString);
 
             }
-            ScoredString min = Collections.min(scores[i]);
-            double minVal = Math.abs(min.score);
+            ScoredString min = null;
+            double minVal = 0;
+            try {
+                if (scores[i] != null)
+                    min = Collections.min(scores[i]);
+                minVal = Math.abs(min.score);
+            }catch ( NoSuchElementException e){
+                minVal = 0;
+            }
+
             for ( ScoredString s: scores[i]){
                 s.score += minVal;
             }
@@ -95,7 +104,16 @@ public class PuzzleSolverWithTFIDF {
 
             String oldString = "";
             for ( int m = 0; m < scores[i].size(); m++){
-                if( scores[i].get(m).result.equalsIgnoreCase(oldString)) {
+                if( scores[i].get(m).result.equalsIgnoreCase(oldString) || scores[i].get(m).result.contains("\\n")
+                        || scores[i].get(m).result.contains("(") || scores[i].get(m).result.contains(")") ||
+                        scores[i].get(m).result.contains("?") || scores[i].get(m).result.contains("+") ||
+                        scores[i].get(m).result.contains("-") || scores[i].get(m).result.contains("\\") ||
+                        scores[i].get(m).result.contains(":") || scores[i].get(m).result.contains("!") ||
+                        scores[i].get(m).result.contains("\"") || scores[i].get(m).result.contains(";") ||
+                        scores[i].get(m).result.contains("\\s+") || scores[i].get(m).result.contains("&") ||
+                        scores[i].get(m).result.contains("”") || scores[i].get(m).result.contains("“")
+                        || scores[i].get(m).result.contains(" ") || scores[i].get(m).result.contains(" ")
+                        ) {
                     scores[i].remove(m);
                     m--;
                 }else{
