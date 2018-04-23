@@ -2,8 +2,6 @@ package UI;
 
 import Parser.Answers;
 import Parser.HTMLProcessor;
-import Solver.PuzzleSolver;
-import Solver.PuzzleSolverVolTwo;
 import Solver.PuzzleSolverWithTFIDF;
 
 import javax.imageio.ImageIO;
@@ -38,7 +36,7 @@ public class PuzzlePanel extends JPanel{
 	private int selectedRectY = -1;
 	private String fileToRead;
 	private ProgramLog log;
-	PuzzleSolverWithTFIDF solver;
+    PuzzleSolverWithTFIDF solver;
 	private Answers answers;
 
 	public PuzzlePanel() {
@@ -253,11 +251,7 @@ public class PuzzlePanel extends JPanel{
 			mouseX = e.getX();
 			mouseY = e.getY();
 			if(mouseX >= 600 && mouseY >= 620 && mouseX <= 675 && mouseY <= 685){
-				try {
-					start();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				start();
 				isRead = false;
 				mouseX = 0;
 				mouseY = 0;
@@ -396,17 +390,19 @@ public class PuzzlePanel extends JPanel{
 	}
 
 
-	public void start() throws IOException {/*
+	public void start() {
 		System.out.println("Start called");
-		solver = new PuzzleSolverVolTwo( puzzle, this);
+        solver = new PuzzleSolverWithTFIDF( puzzle, this);
 		Thread solve = new Thread(){
 			public void run(){
-				solver.solve();
-			}
+                try {
+                    solver.solve();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 		};
-		solve.start();*/
-		solver = new PuzzleSolverWithTFIDF( puzzle, this);
-		solver.solve();
+		solve.start();
 	}
 
 	public Answers getAnswers() {

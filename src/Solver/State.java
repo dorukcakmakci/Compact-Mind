@@ -1,8 +1,7 @@
 package Solver;
 
-        import java.util.ArrayList;
-        import Parser.Answers;
-        import Parser.PuzzleWord;
+import Parser.Answers;
+import Parser.PuzzleWord;
 
 public class State implements Comparable{
 
@@ -43,13 +42,6 @@ public class State implements Comparable{
         backtrackCount = other.backtrackCount;
 
     }*/
-
-    public State(){
-        prevState = null;
-        score = 0;
-        filledSlotCount = 0;
-        puzzle = new char[RECT_WIDTH][RECT_WIDTH];
-    }
 
     public State(Answers answers){
         this.answers = answers;
