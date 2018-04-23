@@ -13,7 +13,7 @@ public class GoogleChecker {
 
 	public static ArrayList<String> getGoogleSearch(String clue, int size) throws IOException{
 		Scanner scan;
-		String key = "AIzaSyCaw5gV94cdilfT5YeCfL7wVufICYO4_TY";
+		String key = "AIzaSyDQx4e4pY8MZumtfgY94I84lJGOXNBkEoc";
 		String seq = "\\w";
 		//System.out.println("google checker called " );
 		Pattern pattern = Pattern.compile(seq);

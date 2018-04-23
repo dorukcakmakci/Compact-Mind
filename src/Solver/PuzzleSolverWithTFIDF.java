@@ -68,20 +68,20 @@ public class PuzzleSolverWithTFIDF {
 
             for ( String s: googleResults[i]){
                 ScoredString scoredString = new ScoredString();
-                scoredString.result = s;
+                scoredString.result = s.toLowerCase();
                 scoredString.score = (tfidf[i]).tfIdf(s) * 100000;
                 scores[i].add( scoredString);
             }
             for ( String s: datamuseResults[i]){
                 ScoredString scoredString = new ScoredString();
-                scoredString.result = s;
+                scoredString.result = s.toLowerCase();
                 scoredString.score = tfidf[i].tfIdf(s) * 100000;
                 scores[i].add( scoredString);
 
             }
             for ( String s: movieResults[i]){
                 ScoredString scoredString = new ScoredString();
-                scoredString.result = s;
+                scoredString.result = s.toLowerCase();
                 scoredString.score = tfidf[i].tfIdf(s) * 100000;
                 scores[i].add( scoredString);
 
@@ -93,6 +93,15 @@ public class PuzzleSolverWithTFIDF {
             }
             Collections.sort(scores[i], Collections.reverseOrder());
 
+            String oldString = "";
+            for ( int m = 0; m < scores[i].size(); m++){
+                if( scores[i].get(m).result.equalsIgnoreCase(oldString)) {
+                    scores[i].remove(m);
+                    m--;
+                }else{
+                   oldString = scores[i].get(m).result;
+                }
+            }
             for ( ScoredString s: scores[i]) {
                 System.out.println(s.score  + ": " + s.result);
             }
