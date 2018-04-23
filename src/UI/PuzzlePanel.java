@@ -2,8 +2,7 @@ package UI;
 
 import Parser.Answers;
 import Parser.HTMLProcessor;
-import Solver.PuzzleSolver;
-import Solver.PuzzleSolverVolTwo;
+import Solver.PuzzleSolverWithTFIDF;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -37,7 +36,7 @@ public class PuzzlePanel extends JPanel{
 	private int selectedRectY = -1;
 	private String fileToRead;
 	private ProgramLog log;
-	PuzzleSolverVolTwo solver;
+    PuzzleSolverWithTFIDF solver;
 	private Answers answers;
 
 	public PuzzlePanel() {
@@ -393,11 +392,15 @@ public class PuzzlePanel extends JPanel{
 
 	public void start() {
 		System.out.println("Start called");
-		solver = new PuzzleSolverVolTwo( puzzle, this);
+        solver = new PuzzleSolverWithTFIDF( puzzle, this);
 		Thread solve = new Thread(){
 			public void run(){
-				solver.solve();
-			}
+                try {
+                    solver.solve();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 		};
 		solve.start();
 	}

@@ -1,14 +1,15 @@
 package Solver;
 
-import java.util.ArrayList;
+import Parser.Answers;
+import Parser.PuzzleWord;
 
-public class State {
+public class State implements Comparable{
 
-    private ArrayList<Word>[] results;
+    private State prevState;
     public static final int RECT_WIDTH =5;
     private char[][] puzzle;
-    private int backtrackCount;
     private int filledSlotCount;
+    private Answers answers;
     private double score;
 
 
@@ -23,21 +24,30 @@ public class State {
         }
     }
 
-    public ArrayList<Word>[] getResults() {
-        return results;
+
+
+    /*public State(State other){
+        statePath = new ArrayList<State>();
+        for(int i = 0; i < other.getStatePath().size(); i++){
+            statePath.add(other.getStatePath().get(i));
+        }
+        this.puzzle = new char[RECT_WIDTH][RECT_WIDTH];
+        for(int i = 0; i < RECT_WIDTH; i++){
+            for(int j = 0; j < RECT_WIDTH; j++){
+                puzzle[i][j] = other.;
+            }
+        }
+        score = other.score;
+        filledSlotCount = other.filledSlotCount;
+        backtrackCount = other.backtrackCount;
+
+    }*/
+
+    public State(Answers answers){
+        this.answers = answers;
+        setScore(0);
     }
 
-    public void setResults(ArrayList<Word>[] results) {
-        this.results = results;
-    }
-
-    public int getBacktrackCount() {
-        return backtrackCount;
-    }
-
-    public void setBacktrackCount(int backtrackCount) {
-        this.backtrackCount = backtrackCount;
-    }
 
     public int getFilledSlotCount() {
         return filledSlotCount;
@@ -47,41 +57,31 @@ public class State {
         this.filledSlotCount = filledSlotCount;
     }
 
-    public State(){
-        score = 0;
-        filledSlotCount = 0;
-        backtrackCount = 0;
-        puzzle = new char[RECT_WIDTH][RECT_WIDTH];
-        results = new ArrayList[10];
-    }
+
     public char getIndex(int i, int j){
         return puzzle[i][j];
     }
 
-    public char[][] getState(){
+    public char[][] getState() {
         return puzzle;
-import Parser.Answers;
-import Parser.PuzzleWord;
-
-public class State implements Comparable{
-    public static final int RECT_WIDTH = 5;
-    private Answers answers;
-    private double score;
-    public State(Answers answers){
-        this.answers = answers;
-        setScore();
     }
 
     public PuzzleWord getAnswer(int i) {
         return answers.getAnswer(i);
     }
+
+    public int getAnswersSize(){
+        return answers.getSize();
+    }
+
     public double getScore(){
         return score;
     }
-    public void setScore(){
-        ///TO-DO
-        this.score = 0;
+
+    public void setScore(double score){
+        this.score = score;
     }
+
     @Override
     public int compareTo(Object o1){
         State s1 = (State)o1;
