@@ -4,9 +4,7 @@ import Parser.Answers;
 import UI.PuzzlePanel;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class PuzzleSolverWithTFIDF {
 
@@ -21,8 +19,10 @@ public class PuzzleSolverWithTFIDF {
     private ArrayList<String>[] googleResults;
     //private ArrayList<String>[] abbreviationResults;
     private ArrayList<String>[] movieResults;
-    //private ArrayList<String>[] reverseDictionaryResults;
+    private ArrayList<String>[] reverseDictionaryResults;
     private ArrayList<ScoredString>[] scores;
+    private Normalizer[] normalizers;
+    private Normalizer normalizer;
     public PuzzleSolverWithTFIDF(String[][] puzzle , PuzzlePanel panel){
 
         this.panel = panel;
@@ -36,10 +36,10 @@ public class PuzzleSolverWithTFIDF {
         datamuseResults = new ArrayList[slotAmount];
         googleResults = new ArrayList[slotAmount];
         movieResults = new ArrayList[slotAmount];
-        //reverseDictionaryResults = new ArrayList[slotAmount];
+        reverseDictionaryResults = new ArrayList[slotAmount];
         //abbreviationResults = new ArrayList[curState.getAnswersSize()];
         scores = new ArrayList[slotAmount];
-
+        normalizers = new Normalizer[slotAmount];
     }
 
 
@@ -64,9 +64,9 @@ public class PuzzleSolverWithTFIDF {
 
 
             movieResults[i] = MovieSearch.search(hint, size);
-            //reverseDictionaryResults[i] = ReverseDictionary.getReverseDict( hint, size);
+            reverseDictionaryResults[i] = ReverseDictionary.getReverseDict( hint, size);
 
-            tfidf[i] = new TFIDF(googleResults[i], datamuseResults[i], movieResults[i]/*, reverseDictionaryResults[i]*/);
+            tfidf[i] = new TFIDF(googleResults[i], datamuseResults[i], movieResults[i], reverseDictionaryResults[i]);
 
             double scorePriority = 0;
 
@@ -88,9 +88,6 @@ public class PuzzleSolverWithTFIDF {
                 System.out.println( "index " + in + ": " + s);
                 ScoredString scoredString = new ScoredString();
                 scoredString.result = s.toLowerCase();
-                System.out.println(scoredString.result);
-                scoredString.score = tfidf[i].tfIdf(s) * 100000;
-                scores[i].add( scoredString);
                 scoredString.score = ((tfidf[i]).tfIdf(s) + scorePriority) * 10;
                 scorePriority -= 0.002;
                 if (!scores[i].contains( scoredString))
@@ -102,8 +99,7 @@ public class PuzzleSolverWithTFIDF {
                 }
                 in++;
             }
-            /*
-            in = 0;
+
             scorePriority = 0;
             for ( String s: reverseDictionaryResults[i]){
                 ScoredString scoredString = new ScoredString();
@@ -117,9 +113,8 @@ public class PuzzleSolverWithTFIDF {
                     ScoredString ss = scores[i].get(index);
                     ss.score += 0.1;
                 }
-                in++;
             }
-            */
+
 
             scorePriority = 0;
             in = 0;
@@ -139,7 +134,7 @@ public class PuzzleSolverWithTFIDF {
             }
 
             ScoredString min = null;
-            double minVal = 0;
+            double minVal = 100000000;
             try {
                 if (scores[i] != null)
                     min = Collections.min(scores[i]);
@@ -155,18 +150,64 @@ public class PuzzleSolverWithTFIDF {
 
             String oldString = "";
             for ( int m = 0; m < scores[i].size(); m++){
-                if( scores[i].get(m).result.equalsIgnoreCase(oldString)) {
+                if (  scores[i].get(m).result.equalsIgnoreCase(oldString) || !(scores[i].get(m).result.matches("[a-zA-Z0-9]*"))){
                     scores[i].remove(m);
                     m--;
                 }else{
                    oldString = scores[i].get(m).result;
                 }
             }
+            /*
+            double minScore = Collections.min(scores[i]).score;
+            double maxScore = Collections.max(scores[i]).score;
+
+            normalizers[i] = new Normalizer(maxScore, minScore, 1, -1);
             for ( ScoredString s: scores[i]) {
-                //System.out.println(s.score  + ": " + s.result);
+                s.score = normalizers[i].normalize(s.score);
+                System.out.println(s.score  + ": " + s.result);
+            }*/
+        }
+        double minScore = 2;
+        double maxScore = -2;
+        for ( ArrayList<ScoredString> sList: scores){
+            for ( ScoredString s: sList){
+                if( s.score < minScore)
+                    minScore = s.score;
+                if( s.score > maxScore)
+                    maxScore = s.score;
             }
         }
+        normalizer = new Normalizer( maxScore, minScore, 1, -1);
         curState.setFilledSlotCount(0);
+
+        int listIn = 0;
+        for ( ArrayList<ScoredString> sList: scores){
+            System.out.println("List index : " + listIn++);
+            for ( ScoredString s: sList){
+                s.score = normalizer.normalize(s.score);
+                System.out.println(s.score  + ": " + s.result);
+            }
+        }
+
+        ArrayList<ScoredList> scoredList = new ArrayList<>();
+        int listIndex = 0;
+        for ( ArrayList<ScoredString> sList: scores){
+            int count = 0;
+            double total = 0;
+            for ( ScoredString s: sList){
+               total += s.score;
+               count++;
+               if (count == 3)
+                   break;
+            }
+            ScoredList list = new ScoredList();
+            list.index = listIndex;
+            list.score = (total) / count;
+            scoredList.add(list);
+        }
+
+        Collections.sort(scoredList, Collections.reverseOrder());
+
     }
 
     public void solve() throws IOException {
@@ -187,29 +228,28 @@ public class PuzzleSolverWithTFIDF {
             while((inputCount[ansNo] <= scores[ansNo].size()) || scores[ansNo].isEmpty()){
                 inputAnswers = panel.getAnswers();
                 if(scores[ansNo].isEmpty()){
-                    //inputAnswers.removeAnswer(ansNo);
-                    System.out.println(inputCount[ansNo] + "," + scores[ansNo].size() + "," + scores[ansNo].isEmpty());
                     ansNo++;
+                    inputNo = 0;
                     continue;
                 }
-                if(inputCount[ansNo] == scores[ansNo].size()){
+                if(inputNo == scores[ansNo].size()){
                     ansNo++;
+                    inputNo=0;
                     break;
                 }
-                inputAnswers.updateAnswer(scores[ansNo].get(inputCount[ansNo]).result,ansNo);
+                inputAnswers.updateAnswer(scores[ansNo].get(inputNo).result,ansNo);
                 boolean isValid = updater.checkState(inputAnswers);
-                //System.out.println("Result size : "+ scores[ansNo].size()+ " ~ Result No: "+ inputCount[ansNo] + " ~ " + "Result: " + scores[ansNo].get(inputCount[ansNo]).result + "~~~~ Answer No : "+ansNo + " VALID = " + isValid);
+                System.out.println("Result size : "+ scores[ansNo].size()+ " ~ Result No: "+ inputNo + " ~ " + "Result: " + scores[ansNo].get(inputNo).result + "~~~~ Answer No : "+ansNo + " VALID = " + isValid);
                 //System.out.println(isValid);
                 if(isValid) {
                     //curState = new State(inputAnswers);
                     panel.printState(inputAnswers);
-                    inputCount[ansNo] = inputCount[ansNo] + 1;
                     ansNo++;
+                    inputNo = 0;
                     break;
                 }
                 else{
-                    inputAnswers.removeAnswer(ansNo);
-                    inputCount[ansNo] = inputCount[ansNo] + 1;
+                        inputNo++;
 
                 }
             }
@@ -267,6 +307,20 @@ public class PuzzleSolverWithTFIDF {
     //public void
 }
 
+
+class ScoredList implements Comparable{
+
+    public int index;
+    public double score;
+    @Override
+    public int compareTo(Object o) {
+        if ( this.score > ((ScoredString)o).score)
+            return 1;
+        if ( this.score < ((ScoredString)o).score)
+            return -1;
+        return 0;
+    }
+}
 class ScoredString implements Comparable{
     public String result;
     public Double score;
