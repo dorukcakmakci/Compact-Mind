@@ -88,9 +88,6 @@ public class PuzzleSolverWithTFIDF {
                 System.out.println( "index " + in + ": " + s);
                 ScoredString scoredString = new ScoredString();
                 scoredString.result = s.toLowerCase();
-                System.out.println(scoredString.result);
-                scoredString.score = tfidf[i].tfIdf(s) * 100000;
-                scores[i].add( scoredString);
                 scoredString.score = ((tfidf[i]).tfIdf(s) + scorePriority) * 10;
                 scorePriority -= 0.002;
                 if (!scores[i].contains( scoredString))
@@ -103,7 +100,6 @@ public class PuzzleSolverWithTFIDF {
                 in++;
             }
 
-            in = 0;
             scorePriority = 0;
             for ( String s: reverseDictionaryResults[i]){
                 ScoredString scoredString = new ScoredString();
@@ -117,7 +113,6 @@ public class PuzzleSolverWithTFIDF {
                     ScoredString ss = scores[i].get(index);
                     ss.score += 0.1;
                 }
-                in++;
             }
 
 
@@ -135,7 +130,6 @@ public class PuzzleSolverWithTFIDF {
                     ScoredString ss = scores[i].get(index);
                     ss.score += 0.25;
                 }
-                in++;
             }
 
             ScoredString min = null;
@@ -155,7 +149,7 @@ public class PuzzleSolverWithTFIDF {
 
             String oldString = "";
             for ( int m = 0; m < scores[i].size(); m++){
-                if( scores[i].get(m).result.equalsIgnoreCase(oldString)) {
+                if (  scores[i].get(m).result.equalsIgnoreCase(oldString) || !(scores[i].get(m).result.matches("[a-zA-Z0-9]*"))){
                     scores[i].remove(m);
                     m--;
                 }else{
@@ -163,7 +157,7 @@ public class PuzzleSolverWithTFIDF {
                 }
             }
             for ( ScoredString s: scores[i]) {
-                //System.out.println(s.score  + ": " + s.result);
+                System.out.println(s.score  + ": " + s.result);
             }
         }
         curState.setFilledSlotCount(0);

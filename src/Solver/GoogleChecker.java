@@ -1,12 +1,23 @@
 package Solver;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+
 
 public class GoogleChecker {
 
-	public static ArrayList<String> getGoogleSearch(String clue, int size) {
+	public static ArrayList<String> getGoogleSearch(String clue, int size) throws IOException {
 		ArrayList<String> a = new ArrayList<String>();
 		/*
+		if ( !clue.contains("_"))
+			return a;*/
+
 		Scanner scan;
 		String key = "AIzaSyC6cBUwOBXM5p_XnRN7Gi-5_zgAPs6YnvA";
 		String seq = "\\w";
@@ -14,7 +25,6 @@ public class GoogleChecker {
 		Pattern pattern = Pattern.compile(seq);
 		scan = new Scanner(clue);
 		String qry = "";
-		ArrayList<String> a = new ArrayList<String>();
 		String temp;
 		while(scan.hasNext()){
 			temp = scan.next();
@@ -54,7 +64,7 @@ public class GoogleChecker {
 		}
 		conn.disconnect();
 		br.close();
-		*/
+
 		return a;
 	}
 
