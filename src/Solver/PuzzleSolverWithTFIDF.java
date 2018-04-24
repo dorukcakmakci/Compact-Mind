@@ -187,6 +187,25 @@ public class PuzzleSolverWithTFIDF {
                 System.out.println(s.score  + ": " + s.result);
             }
         }
+        
+        ArrayList<ScoredList> scoredList = new ArrayList<>();
+        int listIndex = 0;
+        for ( ArrayList<ScoredString> sList: scores){
+            int count = 0;
+            double total = 0;
+            for ( ScoredString s: sList){
+               total += s.score;
+               count++;
+               if (count == 3)
+                   break;
+            }
+            ScoredList list = new ScoredList();
+            list.index = listIndex;
+            list.score = (total) / count;
+            scoredList.add(list);
+        }
+
+        Collections.sort(scoredList, Collections.reverseOrder());
 
     }
 
@@ -240,6 +259,20 @@ public class PuzzleSolverWithTFIDF {
     //public void
 }
 
+
+class ScoredList implements Comparable{
+
+    public int index;
+    public double score;
+    @Override
+    public int compareTo(Object o) {
+        if ( this.score > ((ScoredString)o).score)
+            return 1;
+        if ( this.score < ((ScoredString)o).score)
+            return -1;
+        return 0;
+    }
+}
 class ScoredString implements Comparable{
     public String result;
     public Double score;
