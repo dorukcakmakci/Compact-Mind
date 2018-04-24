@@ -4,9 +4,7 @@ import Parser.Answers;
 import UI.PuzzlePanel;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class PuzzleSolverWithTFIDF {
 
@@ -23,6 +21,8 @@ public class PuzzleSolverWithTFIDF {
     private ArrayList<String>[] movieResults;
     private ArrayList<String>[] reverseDictionaryResults;
     private ArrayList<ScoredString>[] scores;
+    private Normalizer[] normalizers;
+    private Normalizer normalizer;
     public PuzzleSolverWithTFIDF(String[][] puzzle , PuzzlePanel panel){
 
         this.panel = panel;
@@ -39,7 +39,7 @@ public class PuzzleSolverWithTFIDF {
         reverseDictionaryResults = new ArrayList[slotAmount];
         //abbreviationResults = new ArrayList[curState.getAnswersSize()];
         scores = new ArrayList[slotAmount];
-
+        normalizers = new Normalizer[slotAmount];
     }
 
 
@@ -133,7 +133,7 @@ public class PuzzleSolverWithTFIDF {
             }
 
             ScoredString min = null;
-            double minVal = 0;
+            double minVal = 100000000;
             try {
                 if (scores[i] != null)
                     min = Collections.min(scores[i]);
@@ -156,11 +156,38 @@ public class PuzzleSolverWithTFIDF {
                    oldString = scores[i].get(m).result;
                 }
             }
+            /*
+            double minScore = Collections.min(scores[i]).score;
+            double maxScore = Collections.max(scores[i]).score;
+
+            normalizers[i] = new Normalizer(maxScore, minScore, 1, -1);
             for ( ScoredString s: scores[i]) {
+                s.score = normalizers[i].normalize(s.score);
+                System.out.println(s.score  + ": " + s.result);
+            }*/
+        }
+        double minScore = 2;
+        double maxScore = -2;
+        for ( ArrayList<ScoredString> sList: scores){
+            for ( ScoredString s: sList){
+                if( s.score < minScore)
+                    minScore = s.score;
+                if( s.score > maxScore)
+                    maxScore = s.score;
+            }
+        }
+        normalizer = new Normalizer( maxScore, minScore, 1, -1);
+        curState.setFilledSlotCount(0);
+
+        int listIn = 0;
+        for ( ArrayList<ScoredString> sList: scores){
+            System.out.println("List index : " + listIn++);
+            for ( ScoredString s: sList){
+                s.score = normalizer.normalize(s.score);
                 System.out.println(s.score  + ": " + s.result);
             }
         }
-        curState.setFilledSlotCount(0);
+
     }
 
     public void solve() throws IOException {
