@@ -27,6 +27,9 @@ public class Answers {
     public void updateAnswer(String input, int qNo){
         this.getAnswer(qNo).updateAnswer(input);
     }
+    public void removeAnswer(int i){
+        this.getAnswer(i).removeAnswer();
+    }
     private void initAnswers(){
         //ACROSS
         for(int i = 0; i < processor.hints[0].size();i++){

@@ -34,7 +34,7 @@ public class StateUpdater {
                 }
                 else if(answers.getAnswer(i).getCharAt(j) != "" && answers.getAnswer(i).getDirection() == 1 && !puzzle[answers.getAnswer(i).getColNo()][answers.getAnswer(i).getRowNo()+j].equals(answers.getAnswer(i).getCharAt(j))) {
                     flag = false;
-                    System.out.println(puzzle[answers.getAnswer(i).getColNo()][answers.getAnswer(i).getRowNo()+j]+ "," + answers.getAnswer(i).getCharAt(j));
+                    //System.out.println(puzzle[answers.getAnswer(i).getColNo()][answers.getAnswer(i).getRowNo()+j]+ "," + answers.getAnswer(i).getCharAt(j));
                     //System.out.println("Çıkayrum");
                 }
                 if(!flag) {

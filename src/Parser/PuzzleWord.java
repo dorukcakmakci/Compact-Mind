@@ -25,6 +25,10 @@ public class PuzzleWord {
         for(int i = 0; i < size; i++)
             answer[i] = '?';
     }
+    public void removeAnswer(){
+        for(int i = 0; i< size; i++)
+            answer[i] = '?';
+    }
     public void updateAnswer(String inp){
         answer = inp.toCharArray();
     }

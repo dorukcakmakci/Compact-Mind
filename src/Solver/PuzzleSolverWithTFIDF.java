@@ -21,7 +21,7 @@ public class PuzzleSolverWithTFIDF {
     private ArrayList<String>[] googleResults;
     //private ArrayList<String>[] abbreviationResults;
     private ArrayList<String>[] movieResults;
-    private ArrayList<String>[] reverseDictionaryResults;
+    //private ArrayList<String>[] reverseDictionaryResults;
     private ArrayList<ScoredString>[] scores;
     public PuzzleSolverWithTFIDF(String[][] puzzle , PuzzlePanel panel){
 
@@ -36,7 +36,7 @@ public class PuzzleSolverWithTFIDF {
         datamuseResults = new ArrayList[slotAmount];
         googleResults = new ArrayList[slotAmount];
         movieResults = new ArrayList[slotAmount];
-        reverseDictionaryResults = new ArrayList[slotAmount];
+        //reverseDictionaryResults = new ArrayList[slotAmount];
         //abbreviationResults = new ArrayList[curState.getAnswersSize()];
         scores = new ArrayList[slotAmount];
 
@@ -64,9 +64,9 @@ public class PuzzleSolverWithTFIDF {
 
 
             movieResults[i] = MovieSearch.search(hint, size);
-            reverseDictionaryResults[i] = ReverseDictionary.getReverseDict( hint, size);
+            //reverseDictionaryResults[i] = ReverseDictionary.getReverseDict( hint, size);
 
-            tfidf[i] = new TFIDF(googleResults[i], datamuseResults[i], movieResults[i], reverseDictionaryResults[i]);
+            tfidf[i] = new TFIDF(googleResults[i], datamuseResults[i], movieResults[i]/*, reverseDictionaryResults[i]*/);
 
             double scorePriority = 0;
 
@@ -102,7 +102,7 @@ public class PuzzleSolverWithTFIDF {
                 }
                 in++;
             }
-
+            /*
             in = 0;
             scorePriority = 0;
             for ( String s: reverseDictionaryResults[i]){
@@ -119,7 +119,7 @@ public class PuzzleSolverWithTFIDF {
                 }
                 in++;
             }
-
+            */
 
             scorePriority = 0;
             in = 0;
@@ -175,41 +175,89 @@ public class PuzzleSolverWithTFIDF {
     }
     public void findMaxState(){
         int ansNo = 0;
-        int inputNo = 0;
+        int[] inputCount = new int[10];
+        for(int i = 0; i < 10; i++)
+            inputCount[i] = 0;
         Answers inputAnswers = panel.getAnswers();
         System.out.println("-------------------------------------------");
+        /*
         do{
-            inputAnswers = panel.getAnswers();
-            while((inputNo <= scores[ansNo].size()) || scores[ansNo].isEmpty()){
+
+            //inputAnswers = panel.getAnswers();
+            while((inputCount[ansNo] <= scores[ansNo].size()) || scores[ansNo].isEmpty()){
                 inputAnswers = panel.getAnswers();
                 if(scores[ansNo].isEmpty()){
+                    //inputAnswers.removeAnswer(ansNo);
+                    System.out.println(inputCount[ansNo] + "," + scores[ansNo].size() + "," + scores[ansNo].isEmpty());
                     ansNo++;
-                    inputNo = 0;
                     continue;
                 }
-                if(inputNo == scores[ansNo].size()){
+                if(inputCount[ansNo] == scores[ansNo].size()){
                     ansNo++;
-                    inputNo=0;
                     break;
                 }
-                inputAnswers.updateAnswer(scores[ansNo].get(inputNo).result,ansNo);
+                inputAnswers.updateAnswer(scores[ansNo].get(inputCount[ansNo]).result,ansNo);
                 boolean isValid = updater.checkState(inputAnswers);
-                System.out.println("Result size : "+ scores[ansNo].size()+ " ~ Result No: "+ inputNo + " ~ " + "Result: " + scores[ansNo].get(inputNo).result + "~~~~ Answer No : "+ansNo + " VALID = " + isValid);
+                //System.out.println("Result size : "+ scores[ansNo].size()+ " ~ Result No: "+ inputCount[ansNo] + " ~ " + "Result: " + scores[ansNo].get(inputCount[ansNo]).result + "~~~~ Answer No : "+ansNo + " VALID = " + isValid);
                 //System.out.println(isValid);
                 if(isValid) {
                     //curState = new State(inputAnswers);
                     panel.printState(inputAnswers);
+                    inputCount[ansNo] = inputCount[ansNo] + 1;
                     ansNo++;
-                    inputNo = 0;
                     break;
                 }
                 else{
-                        inputNo++;
+                    inputAnswers.removeAnswer(ansNo);
+                    inputCount[ansNo] = inputCount[ansNo] + 1;
 
                 }
             }
             //System.out.println("tıkandı");
         }while(ansNo < 10);
+        */
+        boolean isDone = false;
+        while(ansNo != -1 && !isDone){
+            inputAnswers = panel.getAnswers();
+            panel.printState(inputAnswers);
+            System.out.println(ansNo+","+inputCount[ansNo]);/*
+            if(scores[ansNo].isEmpty() && inputCount[ansNo] == 0){
+                System.out.println("aboo");
+                inputCount[ansNo] = -1;
+                ansNo++;
+                continue;
+            }
+            if(scores[ansNo].isEmpty() && inputCount[ansNo] == -1){
+                System.out.println("vışş");
+                inputCount[ansNo] = 0;
+                ansNo--;
+                continue;
+            }*/
+            if(scores[ansNo].size() == inputCount[ansNo]){
+                System.out.println("oyyy");
+                inputCount[ansNo] = 0;
+                ansNo--;
+                inputCount[ansNo] = inputCount[ansNo]+ 1;
+
+            }
+            System.out.println(ansNo);
+
+            System.out.println(scores[ansNo].size());
+            inputAnswers.updateAnswer(scores[ansNo].get(inputCount[ansNo]).result,ansNo);
+            boolean isValid = updater.checkState(inputAnswers);
+            if(isValid){
+                System.out.println("babo");
+                inputCount[ansNo] = inputCount[ansNo]+ 1;
+                ansNo++;
+
+            }
+            else{
+                inputCount[ansNo] = inputCount[ansNo]+ 1;
+                System.out.println(inputCount[ansNo]);
+            }
+
+        }
+
         System.out.println("çıktım");
         panel.printState(inputAnswers);
 
@@ -234,8 +282,6 @@ class ScoredString implements Comparable{
 
     @Override
     public boolean equals(Object obj) {
-        if( this.result.equalsIgnoreCase(((ScoredString)obj).result))
-            return true;
-        return false;
+        return this.result.equalsIgnoreCase(((ScoredString) obj).result);
     }
 }

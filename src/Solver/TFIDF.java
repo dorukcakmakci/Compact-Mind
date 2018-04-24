@@ -9,21 +9,21 @@ public class TFIDF {
     private ArrayList<String> datamuse;
     private ArrayList<String> abbreviations;
     private ArrayList<String> movie;
-    private ArrayList<String> reverse;
+    //private ArrayList<String> reverse;
     ArrayList<ArrayList<String>> docs;
 
 
 
-    public TFIDF(ArrayList<String> google, ArrayList<String> datamuse, ArrayList<String> movie, ArrayList<String> reverse) {
+    public TFIDF(ArrayList<String> google, ArrayList<String> datamuse, ArrayList<String> movie/*, ArrayList<String> reverse*/) {
         this.google = google;
         this.datamuse = datamuse;
         this.movie = movie;
-        this.reverse = reverse;
+        //this.reverse = reverse;
         docs = new ArrayList<ArrayList<String>>();
         docs.add(google);
         docs.add(datamuse);
         docs.add(movie);
-        docs.add(reverse);
+        //docs.add(reverse);
     }
 
     public double tf(String term, int type) {
@@ -60,7 +60,7 @@ public class TFIDF {
     public double tfIdf( String term) {
 
         double freq = 0;
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < 3; i++){
             freq += tf(term, i) * idf(term);
         }
         return freq;
