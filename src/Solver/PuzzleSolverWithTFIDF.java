@@ -1,5 +1,6 @@
 package Solver;
 
+import Parser.Answers;
 import UI.PuzzlePanel;
 
 import java.io.IOException;
@@ -8,31 +9,28 @@ import java.util.Collections;
 
 public class PuzzleSolverWithTFIDF {
 
-    private ArrayList<State> path;
-    private State currentState;
     private PuzzlePanel panel;
     private TFIDF[] tfidf;
-    private String[][] puzzle;
     private int slotAmount;
     private State curState;
     private boolean isDataCallDone;
+    private StateUpdater updater;
 
     private ArrayList<String>[] datamuseResults;
     private ArrayList<String>[] googleResults;
     //private ArrayList<String>[] abbreviationResults;
     private ArrayList<String>[] movieResults;
     private ArrayList<ScoredString>[] scores;
-
-    public PuzzleSolverWithTFIDF(String[][] puzzle, PuzzlePanel panel){
+    public PuzzleSolverWithTFIDF(String[][] puzzle , PuzzlePanel panel){
 
         this.panel = panel;
-        this.puzzle = puzzle;
 
         isDataCallDone = false;
         slotAmount = panel.getAnswers().getAnswers().size();
 
-        curState = new State(0);
-
+        curState = new State(panel.getAnswers());
+        curState.setOldState(null);
+        updater = new StateUpdater(curState);
         datamuseResults = new ArrayList[slotAmount];
         googleResults = new ArrayList[slotAmount];
         movieResults = new ArrayList[slotAmount];
@@ -72,9 +70,11 @@ public class PuzzleSolverWithTFIDF {
                 scoredString.score = (tfidf[i]).tfIdf(s) * 100000;
                 scores[i].add( scoredString);
             }
+
             for ( String s: datamuseResults[i]){
                 ScoredString scoredString = new ScoredString();
                 scoredString.result = s.toLowerCase();
+                System.out.println(scoredString.result);
                 scoredString.score = tfidf[i].tfIdf(s) * 100000;
                 scores[i].add( scoredString);
 
@@ -86,7 +86,14 @@ public class PuzzleSolverWithTFIDF {
                 scores[i].add( scoredString);
 
             }
-            ScoredString min = Collections.min(scores[i]);
+            ScoredString min;
+            if(scores[i].size() != 0)
+                min = Collections.min(scores[i]);
+            else {
+                min = new ScoredString();
+                min.score = 0.0;
+                min.result = "";
+            }
             double minVal = Math.abs(min.score);
             for ( ScoredString s: scores[i]){
                 s.score += minVal;
@@ -103,30 +110,60 @@ public class PuzzleSolverWithTFIDF {
                 }
             }
             for ( ScoredString s: scores[i]) {
-                System.out.println(s.score  + ": " + s.result);
+                //System.out.println(s.score  + ": " + s.result);
             }
         }
         curState.setFilledSlotCount(0);
     }
 
     public void solve() throws IOException {
-        init();/*
-        for(PuzzleWord wd : panel.getAnswers().getAnswers())
-        {
-            System.out.println(wd.getHint());
-        }
-        if (fillPuzzle()) {
-            System.out.println("Solution found!");
-            System.out.println("Backtracks: " + curState.getFilledSlotCount());
-        } else {
-            System.out.println("Not the best solution");
-        }*/
+        init();
+        findMaxState();
     }
+    public void findMaxState(){
+        int ansNo = 0;
+        int inputNo = 0;
+        Answers inputAnswers = panel.getAnswers();
+        System.out.println("-------------------------------------------");
+        do{
+            inputAnswers = panel.getAnswers();
+            while((inputNo <= scores[ansNo].size()) || scores[ansNo].isEmpty()){
+                inputAnswers = panel.getAnswers();
+                if(scores[ansNo].isEmpty()){
+                    ansNo++;
+                    inputNo = 0;
+                    continue;
+                }
+                if(inputNo == scores[ansNo].size()){
+                    ansNo++;
+                    inputNo=0;
+                    break;
+                }
+                inputAnswers.updateAnswer(scores[ansNo].get(inputNo).result,ansNo);
+                boolean isValid = updater.checkState(inputAnswers);
+                System.out.println("Result size : "+ scores[ansNo].size()+ " ~ Result No: "+ inputNo + " ~ " + "Result: " + scores[ansNo].get(inputNo).result + "~~~~ Answer No : "+ansNo + " VALID = " + isValid);
+                //System.out.println(isValid);
+                if(isValid) {
+                    //curState = new State(inputAnswers);
+                    panel.printState(inputAnswers);
+                    ansNo++;
+                    inputNo = 0;
+                    break;
+                }
+                else{
+                        inputNo++;
 
-    /*private boolean fillPuzzle(){
-        ArrayList<String>[]
+                }
+            }
+            //System.out.println("tıkandı");
+        }while(ansNo < 10);
+        System.out.println("çıktım");
+        panel.printState(inputAnswers);
+
+        //System.out.println(inputAnswers.getAnswer(0).getAnswer());
+        //sendAnswersToPrint(inputAnswers);
     }
-    private*/
+    //public void
 }
 
 class ScoredString implements Comparable{

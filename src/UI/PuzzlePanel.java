@@ -20,8 +20,6 @@ public class PuzzlePanel extends JPanel{
 	private static final int SCREEN_WIDTH = 1200;
 	private static final int puzzleSize = 5;
 	private static final int blankRectPixel = 2;
-	private static final int blankRect = -1;
-	private static final int puzzleRect = 0;
 	private static final int rectWidth = 100;
 	private HTMLProcessor input;
 	private Control mouse; //MOUSE LISTENER
@@ -36,7 +34,7 @@ public class PuzzlePanel extends JPanel{
 	private int selectedRectY = -1;
 	private String fileToRead;
 	private ProgramLog log;
-    PuzzleSolverWithTFIDF solver;
+    private PuzzleSolverWithTFIDF solver;
 	private Answers answers;
 
 	public PuzzlePanel() {
@@ -89,6 +87,7 @@ public class PuzzlePanel extends JPanel{
 		paintLayout(g);
 	}
 	private void paintLayout(Graphics g){
+		//System.out.println(puzzle[0][0]+"-"+puzzle[0][1]+"-"+puzzle[0][2]);
 		g.setColor(Color.lightGray);
 		g.fillRect(0, 0, 1200, 900);
 		g.setColor(Color.black);
@@ -392,11 +391,12 @@ public class PuzzlePanel extends JPanel{
 
 	public void start() {
 		System.out.println("Start called");
-        solver = new PuzzleSolverWithTFIDF( puzzle, this);
+        solver = new PuzzleSolverWithTFIDF(puzzle, this);
 		Thread solve = new Thread(){
 			public void run(){
                 try {
                     solver.solve();
+                    //System.out.println(puzzle[0][0]+","+puzzle[0][1]+","+puzzle[0][2]);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -404,7 +404,23 @@ public class PuzzlePanel extends JPanel{
 		};
 		solve.start();
 	}
+	public void printState(Answers inputAnswers){
+		for(int i = 0; i < inputAnswers.getSize();i++){
+			//System.out.println(inputAnswers.getAnswer(i).getAnswer());
+			for(int j = 0; j < inputAnswers.getAnswer(i).getSize(); j++){
+				//System.out.println(i+"+"+j);
+				if(inputAnswers.getAnswer(i).getDirection() == 0 && puzzle[inputAnswers.getAnswer(i).getColNo() + j][inputAnswers.getAnswer(i).getRowNo()] == "") {
+					//System.out.println((inputAnswers.getAnswer(i).getColNo() + j) + "," + inputAnswers.getAnswer(i).getRowNo() +"-->"+inputAnswers.getAnswer(i).getCharAt(j));
+					puzzle[inputAnswers.getAnswer(i).getColNo() + j][inputAnswers.getAnswer(i).getRowNo()] = inputAnswers.getAnswer(i).getCharAt(j);
+				}
+				if(inputAnswers.getAnswer(i).getDirection() == 1 && puzzle[inputAnswers.getAnswer(i).getColNo()][inputAnswers.getAnswer(i).getRowNo()+j] == "") {
+					//System.out.println(inputAnswers.getAnswer(i).getColNo() + "," + (inputAnswers.getAnswer(i).getRowNo() + j) + "-->"+inputAnswers.getAnswer(i).getCharAt(j));
+					puzzle[inputAnswers.getAnswer(i).getColNo()][inputAnswers.getAnswer(i).getRowNo()+j] = inputAnswers.getAnswer(i).getCharAt(j);
+				}
 
+			}
+		}
+	}
 	public Answers getAnswers() {
 		return answers;
 	}
@@ -419,6 +435,9 @@ public class PuzzlePanel extends JPanel{
 	}
 	public CellBlock[][] getPuzzle(){
 		return input.puzzle;
+	}
+	public void setPuzzle(int col,int row, String input){
+		puzzle[col][row] = input;
 	}
 	public ArrayList<String>[] getHints(){
 		return input.hints;

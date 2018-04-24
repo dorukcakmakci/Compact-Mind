@@ -22,6 +22,8 @@ public class PuzzleWord {
         this.questionNo = questionNo;
         this.hint = hint;
         this.answer = new char[size];
+        for(int i = 0; i < size; i++)
+            answer[i] = '?';
     }
     public void updateAnswer(String inp){
         answer = inp.toCharArray();
@@ -32,8 +34,9 @@ public class PuzzleWord {
     public char getAnswerLetter(int index){
         return answer[index];
     }
-    public String getAnswer(){
-        return answer.toString();
+    public String getAnswer() {
+        String output = new String(answer);
+        return output;
     }
     /////////////////////
     public PuzzleWord( int colNo, int rowNo, int length, String hint, int loc, int questionNo){
@@ -121,7 +124,12 @@ public class PuzzleWord {
         }
         buffer = tmp;
     }
-
+    public String getCharAt(int i){
+        if(answer[i] == '?')
+            return "";
+        else
+            return "" + answer[i];
+    }
     public int getDirection() {
         return direction;
     }

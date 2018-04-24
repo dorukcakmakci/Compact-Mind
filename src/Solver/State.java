@@ -5,49 +5,20 @@ import Parser.PuzzleWord;
 
 public class State implements Comparable{
 
-    private State prevState;
+    private State oldState = null;
     public static final int RECT_WIDTH =5;
-    private char[][] puzzle;
     private int filledSlotCount;
     private Answers answers;
     private double score;
 
 
-    public State(double score){
-        filledSlotCount = 0;
-        this.score = score;
-        this.puzzle = new char[RECT_WIDTH][RECT_WIDTH];
-        for(int i = 0; i < RECT_WIDTH; i++){
-            for(int j = 0; j < RECT_WIDTH; j++){
-                puzzle[i][j] = '?';
-            }
-        }
-    }
-
-
-
-    /*public State(State other){
-        statePath = new ArrayList<State>();
-        for(int i = 0; i < other.getStatePath().size(); i++){
-            statePath.add(other.getStatePath().get(i));
-        }
-        this.puzzle = new char[RECT_WIDTH][RECT_WIDTH];
-        for(int i = 0; i < RECT_WIDTH; i++){
-            for(int j = 0; j < RECT_WIDTH; j++){
-                puzzle[i][j] = other.;
-            }
-        }
-        score = other.score;
-        filledSlotCount = other.filledSlotCount;
-        backtrackCount = other.backtrackCount;
-
-    }*/
-
     public State(Answers answers){
         this.answers = answers;
-        setScore(0);
+        this.score = 0;
     }
-
+    public Answers getAnswers(){
+        return answers;
+    }
 
     public int getFilledSlotCount() {
         return filledSlotCount;
@@ -55,15 +26,6 @@ public class State implements Comparable{
 
     public void setFilledSlotCount(int filledSlotCount) {
         this.filledSlotCount = filledSlotCount;
-    }
-
-
-    public char getIndex(int i, int j){
-        return puzzle[i][j];
-    }
-
-    public char[][] getState() {
-        return puzzle;
     }
 
     public PuzzleWord getAnswer(int i) {
@@ -82,6 +44,12 @@ public class State implements Comparable{
         this.score = score;
     }
 
+    public void setOldState(State oldState){
+        this.oldState = oldState;
+    }
+    public State getOldState(){
+        return oldState;
+    }
     @Override
     public int compareTo(Object o1){
         State s1 = (State)o1;

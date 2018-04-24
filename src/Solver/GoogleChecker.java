@@ -1,19 +1,14 @@
 package Solver;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class GoogleChecker {
 
-	public static ArrayList<String> getGoogleSearch(String clue, int size) throws IOException{
+	public static ArrayList<String> getGoogleSearch(String clue, int size) {
+		ArrayList<String> a = new ArrayList<String>();
+		/*
 		Scanner scan;
-		String key = "AIzaSyDQx4e4pY8MZumtfgY94I84lJGOXNBkEoc";
+		String key = "AIzaSyC6cBUwOBXM5p_XnRN7Gi-5_zgAPs6YnvA";
 		String seq = "\\w";
 		//System.out.println("google checker called " );
 		Pattern pattern = Pattern.compile(seq);
@@ -59,6 +54,7 @@ public class GoogleChecker {
 		}
 		conn.disconnect();
 		br.close();
+		*/
 		return a;
 	}
 

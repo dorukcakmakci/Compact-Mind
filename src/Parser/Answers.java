@@ -12,6 +12,21 @@ public class Answers {
         this.answers = new ArrayList<PuzzleWord>();
         initAnswers();
     }
+    public void updateAnswers(String s0, String s1, String s2, String s3, String s4, String s5, String s6, String s7, String s8,String s9){
+        this.getAnswer(0).updateAnswer(s0);
+        this.getAnswer(1).updateAnswer(s1);
+        this.getAnswer(2).updateAnswer(s2);
+        this.getAnswer(3).updateAnswer(s3);
+        this.getAnswer(4).updateAnswer(s4);
+        this.getAnswer(5).updateAnswer(s5);
+        this.getAnswer(6).updateAnswer(s6);
+        this.getAnswer(7).updateAnswer(s7);
+        this.getAnswer(8).updateAnswer(s8);
+        this.getAnswer(9).updateAnswer(s9);
+    }
+    public void updateAnswer(String input, int qNo){
+        this.getAnswer(qNo).updateAnswer(input);
+    }
     private void initAnswers(){
         //ACROSS
         for(int i = 0; i < processor.hints[0].size();i++){
