@@ -25,9 +25,9 @@ public class PuzzleWord {
         for(int i = 0; i < size; i++)
             answer[i] = '?';
     }
-    public void removeAnswer(){
+    public void removeAll(){
         for(int i = 0; i< size; i++)
-            answer[i] = '?';
+            removeCharAt(i);
     }
     public void updateAnswer(String inp){
         answer = inp.toCharArray();
@@ -133,6 +133,9 @@ public class PuzzleWord {
             return "";
         else
             return "" + answer[i];
+    }
+    public void removeCharAt(int i){
+        answer[i] = '?';
     }
     public int getDirection() {
         return direction;

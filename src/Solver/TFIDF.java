@@ -14,15 +14,15 @@ public class TFIDF {
 
 
 
-    public TFIDF(ArrayList<String> google, ArrayList<String> datamuse, ArrayList<String> movie/*, ArrayList<String> reverse*/) {
-        this.google = google;
-        this.datamuse = datamuse;
-        this.movie = movie;
+    public TFIDF( /* ArrayList<String> google,*/ ArrayList<String> datamuse /*, ArrayList<String> movie, ArrayList<String> reverse */) {
+        //this.google = google;
+        //this.datamuse = datamuse;
+        //this.movie = movie;
         //this.reverse = reverse;
         docs = new ArrayList<ArrayList<String>>();
-        docs.add(google);
+        //docs.add(google);
         docs.add(datamuse);
-        docs.add(movie);
+        //docs.add(movie);
         //docs.add(reverse);
     }
 
@@ -31,11 +31,11 @@ public class TFIDF {
         for (String word : docs.get(type)) {
             if (term.equalsIgnoreCase(word))
                 switch(type){
-                    case 0: /*google*/ n += 0.3; break;
-                    case 1: /*datamuse*/ n += 0.6; break;
+                    //case 0: /*google*/ n += 0.3; break;
+                    case 0: /*datamuse*/ n += 0.6; break; //case changed to 0
                     // case 2: /*abbreviation*/ n += 3; break;
-                    case 2: /*movie*/  n += 0.8 ;break;
-                    case 3:/*reverseDictionary*/ n += 0.4; break;
+                    //case 2: /*movie*/  n += 0.8 ;break;
+                    //case 3:/*reverseDictionary*/ n += 0.4; break;
                     default: break;
                 }
 
@@ -60,7 +60,7 @@ public class TFIDF {
     public double tfIdf( String term) {
 
         double freq = 0;
-        for(int i = 0; i < 3; i++){
+        for(int i = 0; i < 1 /* changed from 3*/; i++){
             freq += tf(term, i) * idf(term);
         }
         return freq;

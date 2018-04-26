@@ -4,7 +4,9 @@ import Parser.Answers;
 import UI.PuzzlePanel;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 
 public class PuzzleSolverWithTFIDF {
 
@@ -23,27 +25,29 @@ public class PuzzleSolverWithTFIDF {
     private ArrayList<ScoredString>[] scores;
     private Normalizer[] normalizers;
     private Normalizer normalizer;
+    private Answers maxAnswer;
     public PuzzleSolverWithTFIDF(String[][] puzzle , PuzzlePanel panel){
 
         this.panel = panel;
-
+        maxAnswer = new Answers(panel.getInput());
         isDataCallDone = false;
         slotAmount = panel.getAnswers().getAnswers().size();
 
         curState = new State(panel.getAnswers());
         curState.setOldState(null);
-        updater = new StateUpdater(curState);
+        updater = new StateUpdater(curState,this.panel.foundAnswers, maxAnswer, panel);
+
         datamuseResults = new ArrayList[slotAmount];
         googleResults = new ArrayList[slotAmount];
         movieResults = new ArrayList[slotAmount];
-        reverseDictionaryResults = new ArrayList[slotAmount];
+        //reverseDictionaryResults = new ArrayList[slotAmount];
         //abbreviationResults = new ArrayList[curState.getAnswersSize()];
         scores = new ArrayList[slotAmount];
         normalizers = new Normalizer[slotAmount];
     }
 
 
-    private void init() throws IOException {
+    private void init() {
 
         tfidf = new TFIDF[slotAmount]; // scorer for d1, d2, ..... , a4, a5
         Datamuse datamuse = new Datamuse();
@@ -52,25 +56,27 @@ public class PuzzleSolverWithTFIDF {
             scores[i] = new ArrayList<ScoredString>();
             String hint = panel.getAnswers().getAnswers().get(i).getHint();
             int size = panel.getAnswers().getAnswers().get(i).getSize();
-
+            panel.addLog("Checking datamuse for hint no : " + i);
             datamuse.checkDatamuse(hint, size);
 
             datamuseResults[i] = new ArrayList<>();
             for(int j = 0; j < Datamuse.results.size(); j++){
-                datamuseResults[i].add( Datamuse.results.get(j));
+                datamuseResults[i].add( Datamuse.results.get(j).toUpperCase());
             }
+            panel.addLog("Checking google for hint no : " + i);
+            //googleResults[i] = GoogleChecker.getGoogleSearch(hint, size);
 
-            googleResults[i] = GoogleChecker.getGoogleSearch(hint, size);
-
-
-            movieResults[i] = MovieSearch.search(hint, size);
-            reverseDictionaryResults[i] = ReverseDictionary.getReverseDict( hint, size);
-
-            tfidf[i] = new TFIDF(googleResults[i], datamuseResults[i], movieResults[i], reverseDictionaryResults[i]);
+            panel.addLog("Checking imdb for hint no : " + i);
+            //movieResults[i] = MovieSearch.search(hint, size);
+            panel.addLog("Checking reverse dictionary for hint no : " + i);
+            //reverseDictionaryResults[i] = ReverseDictionary.getReverseDict( hint, size);
+            panel.addLog("Calling tfidf for found data for hint no : " + i);
+            tfidf[i] = new TFIDF(/*googleResults[i],*/ datamuseResults[i]/*, movieResults[i], reverseDictionaryResults[i]*/);
 
             double scorePriority = 0;
-
+            panel.addLog("Preprocessing data for hint no : " + i);
             scorePriority = 0;
+            /*
             for ( String s: movieResults[i]){
                 ScoredString scoredString = new ScoredString();
                 scoredString.result = s.toLowerCase();
@@ -80,14 +86,14 @@ public class PuzzleSolverWithTFIDF {
                     scores[i].add( scoredString);
 
             }
-
+            */
             scorePriority = 0;
             int in = 0;
 
             for ( String s: datamuseResults[i]){
-                System.out.println( "index " + in + ": " + s);
+
                 ScoredString scoredString = new ScoredString();
-                scoredString.result = s.toLowerCase();
+                scoredString.result = s.toUpperCase();
                 scoredString.score = ((tfidf[i]).tfIdf(s) + scorePriority) * 10;
                 scorePriority -= 0.002;
                 if (!scores[i].contains( scoredString))
@@ -99,7 +105,7 @@ public class PuzzleSolverWithTFIDF {
                 }
                 in++;
             }
-
+            /*
             scorePriority = 0;
             for ( String s: reverseDictionaryResults[i]){
                 ScoredString scoredString = new ScoredString();
@@ -114,8 +120,8 @@ public class PuzzleSolverWithTFIDF {
                     ss.score += 0.1;
                 }
             }
-
-
+            */
+            /*
             scorePriority = 0;
             in = 0;
             for ( String s: googleResults[i]){
@@ -132,7 +138,8 @@ public class PuzzleSolverWithTFIDF {
                 }
                 in++;
             }
-
+            */
+            panel.addLog("Scoring data for hint no : " + i);
             ScoredString min = null;
             double minVal = 100000000;
             try {
@@ -177,6 +184,7 @@ public class PuzzleSolverWithTFIDF {
                     maxScore = s.score;
             }
         }
+        panel.addLog("Normalizing data scores");
         normalizer = new Normalizer( maxScore, minScore, 1, -1);
         curState.setFilledSlotCount(0);
 
@@ -211,100 +219,92 @@ public class PuzzleSolverWithTFIDF {
     }
 
     public void solve() throws IOException {
+        panel.addLog("Starting the data retrieval and data preprocess-scoring");
         init();
+        panel.addLog("Finding the maximum scored state");
         findMaxState();
     }
-    public void findMaxState(){
+    public void findMaxState() {
         int ansNo = 0;
         int[] inputCount = new int[10];
-        for(int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++)
             inputCount[i] = 0;
         Answers inputAnswers = panel.getAnswers();
         System.out.println("-------------------------------------------");
-        /*
-        do{
 
-            //inputAnswers = panel.getAnswers();
-            while((inputCount[ansNo] <= scores[ansNo].size()) || scores[ansNo].isEmpty()){
-                inputAnswers = panel.getAnswers();
-                if(scores[ansNo].isEmpty()){
-                    ansNo++;
-                    inputNo = 0;
-                    continue;
-                }
-                if(inputNo == scores[ansNo].size()){
-                    ansNo++;
-                    inputNo=0;
-                    break;
-                }
-                inputAnswers.updateAnswer(scores[ansNo].get(inputNo).result,ansNo);
-                boolean isValid = updater.checkState(inputAnswers);
-                System.out.println("Result size : "+ scores[ansNo].size()+ " ~ Result No: "+ inputNo + " ~ " + "Result: " + scores[ansNo].get(inputNo).result + "~~~~ Answer No : "+ansNo + " VALID = " + isValid);
-                //System.out.println(isValid);
-                if(isValid) {
-                    //curState = new State(inputAnswers);
-                    panel.printState(inputAnswers);
-                    ansNo++;
-                    inputNo = 0;
-                    break;
-                }
-                else{
-                        inputNo++;
-
-                }
-            }
-            //System.out.println("tıkandı");
-        }while(ansNo < 10);
-        */
-        boolean isDone = false;
-        while(ansNo != -1 && !isDone){
-            inputAnswers = panel.getAnswers();
+        int stateCount = 0;
+        int validStateCount = 0;
+        boolean forwardFlag = true;
+        while (ansNo != -1) {
             panel.printState(inputAnswers);
-            System.out.println(ansNo+","+inputCount[ansNo]);/*
-            if(scores[ansNo].isEmpty() && inputCount[ansNo] == 0){
-                System.out.println("aboo");
-                inputCount[ansNo] = -1;
-                ansNo++;
+
+            if (scores[ansNo].isEmpty()) {
+                if (forwardFlag) {
+                    panel.addLog("No data found for this Q No: "+ansNo+", leaving it blank");
+                    ansNo++;
+                    continue;
+                } else {
+                    panel.addLog("No data found for Q No: "+ansNo+", backtracking");
+                    ansNo--;
+                    inputAnswers.removeAnswer(ansNo);
+                }
+            }
+            if (scores[ansNo].size() == inputCount[ansNo]) {
+                panel.addLog("All results were checked for Q No "+ansNo+", backtracking");
+                inputAnswers.removeAnswer(ansNo);
+                panel.printState(inputAnswers);
+                inputCount[ansNo] = 0;
+                forwardFlag = false;
+                ansNo--;
+                //if(scores[ansNo].isEmpty())
+                if (ansNo == -1) {
+                    break;
+                }
+                inputAnswers.removeAnswer(ansNo);
+                //inputCount[ansNo] = inputCount[ansNo]+ 1;
+                panel.printState(inputAnswers);
+                //panel.addLog("All data for the current answer no is checked, backtracking to Question :" +ansNo +"with data no :" + inputCount[ansNo]);
                 continue;
             }
-            if(scores[ansNo].isEmpty() && inputCount[ansNo] == -1){
-                System.out.println("vışş");
-                inputCount[ansNo] = 0;
-                ansNo--;
-                continue;
-            }*/
-            if(scores[ansNo].size() == inputCount[ansNo]){
-                System.out.println("oyyy");
-                inputCount[ansNo] = 0;
-                ansNo--;
-                inputCount[ansNo] = inputCount[ansNo]+ 1;
+            //System.out.println(ansNo);
 
-            }
-            System.out.println(ansNo);
-
-            System.out.println(scores[ansNo].size());
-            inputAnswers.updateAnswer(scores[ansNo].get(inputCount[ansNo]).result,ansNo);
-            boolean isValid = updater.checkState(inputAnswers);
-            if(isValid){
-                System.out.println("babo");
-                inputCount[ansNo] = inputCount[ansNo]+ 1;
+            //System.out.println(scores[ansNo].size());
+            inputAnswers.updateAnswer(scores[ansNo].get(inputCount[ansNo]).result, ansNo);
+            boolean isValid = updater.checkState(inputAnswers, maxAnswer);
+            if (isValid) {
+                panel.addLog("Checked state was valid for Q No: " + ansNo);
+                validStateCount++;
+                if(panel.getSlowed()) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                panel.printState(inputAnswers);
+                //panel.addLog("Answers were valid for the puzzle, trying out different states");
+                inputCount[ansNo] = inputCount[ansNo] + 1;
                 ansNo++;
+                forwardFlag = true;
 
+            } else {
+                panel.addLog("Checked state was invalid for Q No: "+ ansNo + ". Trying other data");
+                inputAnswers.removeAnswer(ansNo);
+                panel.printState(inputAnswers);
+                inputCount[ansNo] = inputCount[ansNo] + 1;
             }
-            else{
-                inputCount[ansNo] = inputCount[ansNo]+ 1;
-                System.out.println(inputCount[ansNo]);
-            }
-
+            panel.printState(inputAnswers);
+            stateCount++;
         }
-
-        System.out.println("çıktım");
-        panel.printState(inputAnswers);
-
-        //System.out.println(inputAnswers.getAnswer(0).getAnswer());
-        //sendAnswersToPrint(inputAnswers);
+        maxAnswer.updateAnswer(panel.foundAnswers.getAnswer(1).getAnswer(), 1);
+        maxAnswer.updateAnswer(panel.foundAnswers.getAnswer(8).getAnswer(), 8);
+        panel.printState(maxAnswer);
+        panel.addLog("No other state was found, exiting");
+        panel.addLog("Solving operation is done");
+        panel.addLog("Checked state count : " + stateCount);
+        panel.addLog("Found valid state count : " + validStateCount);
     }
-    //public void
+
 }
 
 
@@ -314,9 +314,9 @@ class ScoredList implements Comparable{
     public double score;
     @Override
     public int compareTo(Object o) {
-        if ( this.score > ((ScoredString)o).score)
+        if ( this.score > ((ScoredList)o).score)
             return 1;
-        if ( this.score < ((ScoredString)o).score)
+        if ( this.score < ((ScoredList)o).score)
             return -1;
         return 0;
     }

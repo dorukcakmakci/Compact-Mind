@@ -14,9 +14,9 @@ public class GoogleChecker {
 
 	public static ArrayList<String> getGoogleSearch(String clue, int size) throws IOException {
 		ArrayList<String> a = new ArrayList<String>();
-		/*
+
 		if ( !clue.contains("_"))
-			return a;*/
+			return a;
 
 		Scanner scan;
 		String key = "AIzaSyC6cBUwOBXM5p_XnRN7Gi-5_zgAPs6YnvA";
