@@ -2,7 +2,7 @@ package Solver;
 
 import Parser.Answers;
 import Parser.PuzzleWord;
-
+//CLASS THAT STORES A STATE WITH ANSWERS AND STATE SCORE
 public class State implements Comparable{
 
     private State oldState = null;
