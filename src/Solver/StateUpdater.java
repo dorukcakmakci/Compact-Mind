@@ -2,7 +2,7 @@ package Solver;
 
 import Parser.Answers;
 import UI.PuzzlePanel;
-
+//CLASS THAT STORES MAX STATE AND CHECKS IF A STATE IS VALID OR NOT
 public class StateUpdater {
     Answers currentAnswers;
     private Answers maxAnswers;
@@ -15,7 +15,7 @@ public class StateUpdater {
         checkState(state.getAnswers(), maxAnswer);
     }
 
-
+    //ALGORITHM FOR CONSTRAINT SATISFACTION PROBLEM
     public boolean checkState(Answers answers, Answers maxAnswer){
         int[] found = new int[10];
         for(int i = 0; i < 10; i++) {
@@ -23,23 +23,28 @@ public class StateUpdater {
         }
         boolean flag = true;
         String [][] puzzle = new String[5][5];
+        //INITIALIZING THE EMPTY PUZZLE
         for(int i = 0; i < puzzle.length; i++){
             for(int j = 0; j < puzzle[0].length; j++)
                 puzzle[i][j] = "";
         }
         for(int i = 0; i < answers.getAnswers().size(); i++){
             for(int j = 0; j < answers.getAnswer(i).getSize(); j++){
+                //IF THE PUZZLE SLOT IS EMPTY, PLACE THE CORRESPONDING LETTER
                 if(answers.getAnswer(i).getDirection() == 0 && puzzle[answers.getAnswer(i).getColNo()+j][answers.getAnswer(i).getRowNo()] == ""){
                     puzzle[answers.getAnswer(i).getColNo()+j][answers.getAnswer(i).getRowNo()] = answers.getAnswer(i).getCharAt(j);
                     continue;
                 }
+                //IF THE PUZZLE SLOT IS EMPTY, PLACE THE CORRESPONDING LETTER
                 if(answers.getAnswer(i).getDirection() == 1 && puzzle[answers.getAnswer(i).getColNo()][answers.getAnswer(i).getRowNo()+j] == ""){
                     puzzle[answers.getAnswer(i).getColNo()][answers.getAnswer(i).getRowNo()+j] = answers.getAnswer(i).getCharAt(j);
                     continue;
                 }
+                //IF A CONFLICT OCCURS, RETURN INVALID
                 if(answers.getAnswer(i).getCharAt(j) != "" && answers.getAnswer(i).getDirection() == 0 && !puzzle[answers.getAnswer(i).getColNo()+j][answers.getAnswer(i).getRowNo()].equals(answers.getAnswer(i).getCharAt(j))) {
                     flag = false;
                 }
+                //IF A CONFLICT OCCURS, RETURN INVALID
                 if(answers.getAnswer(i).getCharAt(j) != "" && answers.getAnswer(i).getDirection() == 1 && !puzzle[answers.getAnswer(i).getColNo()][answers.getAnswer(i).getRowNo()+j].equals(answers.getAnswer(i).getCharAt(j))) {
                     flag = false;
                 }
