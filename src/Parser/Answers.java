@@ -1,7 +1,7 @@
 package Parser;
 
 import java.util.ArrayList;
-
+//CLASS THAT STORES CURRENT ANSWER STATE
 public class Answers {
     private static final int RECT_SIZE = 5;
     private HTMLProcessor processor;
