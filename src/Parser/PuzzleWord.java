@@ -1,5 +1,5 @@
 package Parser;
-
+//CLASS THAT STORES THE PUZZLE WORD
 public class PuzzleWord {
     private int direction; // 0 ACROSS //1 DOWN
     private int questionNo;
