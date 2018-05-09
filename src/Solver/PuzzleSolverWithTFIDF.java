@@ -225,6 +225,7 @@ public class PuzzleSolverWithTFIDF {
         findMaxState();
     }
     public void findMaxState() {
+        //ALGORITHM THAT ITERATES ALL POSSIBLE STATES
         int ansNo = 0;
         int[] inputCount = new int[10];
         for (int i = 0; i < 10; i++)
@@ -296,8 +297,6 @@ public class PuzzleSolverWithTFIDF {
             panel.printState(inputAnswers);
             stateCount++;
         }
-        maxAnswer.updateAnswer(panel.foundAnswers.getAnswer(1).getAnswer(), 1);
-        maxAnswer.updateAnswer(panel.foundAnswers.getAnswer(8).getAnswer(), 8);
         panel.printState(maxAnswer);
         panel.addLog("No other state was found, exiting");
         panel.addLog("Solving operation is done");
