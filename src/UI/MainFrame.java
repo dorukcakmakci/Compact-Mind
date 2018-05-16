@@ -14,7 +14,7 @@ public class MainFrame extends JFrame  {
 	private PuzzlePanel puzzle;
 	private SeleniumConnection connection;
 
-	private MainFrame() {
+	public MainFrame() {
 		init();
 	}
 	private void init(){
