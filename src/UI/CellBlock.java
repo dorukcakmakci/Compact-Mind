@@ -1,5 +1,5 @@
 package UI;
-
+//CLASS THAT STORES A PUZZLE SLOT
 public class CellBlock {
 	private String questionNo;
 	private String currentLetter;

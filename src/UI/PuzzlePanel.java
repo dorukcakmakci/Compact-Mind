@@ -2,8 +2,7 @@ package UI;
 
 import Parser.Answers;
 import Parser.HTMLProcessor;
-import Solver.PuzzleSolver;
-import Solver.PuzzleSolverVolTwo;
+import Solver.PuzzleSolverWithTFIDF;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -21,8 +20,6 @@ public class PuzzlePanel extends JPanel{
 	private static final int SCREEN_WIDTH = 1200;
 	private static final int puzzleSize = 5;
 	private static final int blankRectPixel = 2;
-	private static final int blankRect = -1;
-	private static final int puzzleRect = 0;
 	private static final int rectWidth = 100;
 	private HTMLProcessor input;
 	private Control mouse; //MOUSE LISTENER
@@ -30,14 +27,17 @@ public class PuzzlePanel extends JPanel{
 	private BufferedImage revealImage;
 	private BufferedImage startImage;
 	private BufferedImage readFileImage;
+	private BufferedImage slowImage;
 	private boolean isRevealed;
 	private boolean isRead;
+	public Answers foundAnswers;
 	private String[][] puzzle;
 	private int selectedRectX = -1;
 	private int selectedRectY = -1;
 	private String fileToRead;
 	private ProgramLog log;
-	PuzzleSolverVolTwo solver;
+	private boolean isSlowedDown = false;
+    private PuzzleSolverWithTFIDF solver;
 	private Answers answers;
 
 	public PuzzlePanel() {
@@ -52,7 +52,11 @@ public class PuzzlePanel extends JPanel{
 		keyboard = new KeyInput();
 		addMouseListener(mouse);
 		addKeyListener(keyboard);
-
+        try {
+            slowImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/slow_image.png"));
+        }	catch(IOException exc) {
+            exc.printStackTrace();
+        }
 		try {
 			revealImage = ImageIO.read(getClass().getResourceAsStream("/resources/images/reveal_image.png"));
 		}	catch(IOException exc) {
@@ -85,11 +89,17 @@ public class PuzzlePanel extends JPanel{
 		log.addLog("Initializing and drawing the layout.");
 		repaint();
 	}
-
+    public boolean getSlowed(){
+	    return isSlowedDown;
+    }
+    public void changeSlow(){
+        isSlowedDown = !isSlowedDown;
+    }
 	public void paint(Graphics g){
 		paintLayout(g);
 	}
 	private void paintLayout(Graphics g){
+		//System.out.println(puzzle[0][0]+"-"+puzzle[0][1]+"-"+puzzle[0][2]);
 		g.setColor(Color.lightGray);
 		g.fillRect(0, 0, 1200, 900);
 		g.setColor(Color.black);
@@ -163,6 +173,7 @@ public class PuzzlePanel extends JPanel{
 		g.drawImage(startImage, 600, 620, this);
 		g.drawImage(revealImage, 680, 620, this);
 		g.drawImage(readFileImage,760,620,this);
+		g.drawImage(slowImage,600,750, this);
 		//READ TEXT
 		g.setColor(Color.WHITE);
 		g.fillRect(600, 700, 235,30);
@@ -225,6 +236,7 @@ public class PuzzlePanel extends JPanel{
 		//public htmli fileToRead stringi ile çağırabiliriz
 		input.readPuzzle(fileToRead);
 		answers = new Answers(input);
+		foundAnswers = new Answers(input,true);
 		log.addLog("Read puzzle is called for the file:" + fileToRead);
 		isRead = false;
 		fileToRead = "";
@@ -270,6 +282,13 @@ public class PuzzlePanel extends JPanel{
 				isRead = false;
 				read();
 			}
+			if(mouseX >= 600 && mouseY >= 750 && mouseX <= 675 && mouseY >= 615){
+			    changeSlow();
+			    if(isSlowedDown)
+			        log.addLog("Slow is changed to 2 steps per second");
+			    else
+			        log.addLog("Slow is disabled");
+            }
 			/////// 0 Y
 			if(mouseX >= 45 && mouseY >= 40 && mouseX <= 145 && mouseY <= 140){
 				selectRect(0,0);
@@ -393,18 +412,52 @@ public class PuzzlePanel extends JPanel{
 
 	public void start() {
 		System.out.println("Start called");
-		solver = new PuzzleSolverVolTwo( puzzle, this);
+        solver = new PuzzleSolverWithTFIDF(puzzle, this);
 		Thread solve = new Thread(){
 			public void run(){
-				solver.solve();
-			}
+                try {
+                    solver.solve();
+                    //System.out.println(puzzle[0][0]+","+puzzle[0][1]+","+puzzle[0][2]);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 		};
 		solve.start();
 	}
-
+	public void printState(Answers inputAnswers){
+		for(int i = 0; i < inputAnswers.getSize();i++){
+			for(int j = 0; j < inputAnswers.getAnswer(i).getSize(); j++){
+				//System.out.println(i+"+"+j);
+				if(inputAnswers.getAnswer(i).getDirection() == 0) {
+					puzzle[inputAnswers.getAnswer(i).getColNo() + j][inputAnswers.getAnswer(i).getRowNo()] = "";
+				}
+				if(inputAnswers.getAnswer(i).getDirection() == 1) {
+					puzzle[inputAnswers.getAnswer(i).getColNo()][inputAnswers.getAnswer(i).getRowNo()+j] = "";
+				}
+			}
+		}
+		for(int i = 0; i < inputAnswers.getSize();i++){
+			//System.out.println(inputAnswers.getAnswer(i).getAnswer());
+			for(int j = 0; j < inputAnswers.getAnswer(i).getSize(); j++){
+				//System.out.println(i+"+"+j);
+				if(inputAnswers.getAnswer(i).getDirection() == 0 && puzzle[inputAnswers.getAnswer(i).getColNo() + j][inputAnswers.getAnswer(i).getRowNo()] == "") {
+					puzzle[inputAnswers.getAnswer(i).getColNo() + j][inputAnswers.getAnswer(i).getRowNo()] = inputAnswers.getAnswer(i).getCharAt(j);
+				}
+				if(inputAnswers.getAnswer(i).getDirection() == 1 && puzzle[inputAnswers.getAnswer(i).getColNo()][inputAnswers.getAnswer(i).getRowNo()+j] == "") {
+					puzzle[inputAnswers.getAnswer(i).getColNo()][inputAnswers.getAnswer(i).getRowNo()+j] = inputAnswers.getAnswer(i).getCharAt(j);
+				}
+			}
+		}
+	}
 	public Answers getAnswers() {
 		return answers;
 	}
+
+	public HTMLProcessor getInput() {
+		return input;
+	}
+
 	///////////////////////////
 	//KEYBOARD LISTENER END////
 	///////////////////////////
@@ -416,6 +469,9 @@ public class PuzzlePanel extends JPanel{
 	}
 	public CellBlock[][] getPuzzle(){
 		return input.puzzle;
+	}
+	public void setPuzzle(int col,int row, String input){
+		puzzle[col][row] = input;
 	}
 	public ArrayList<String>[] getHints(){
 		return input.hints;

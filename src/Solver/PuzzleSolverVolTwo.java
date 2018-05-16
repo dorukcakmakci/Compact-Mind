@@ -2,6 +2,7 @@ package Solver;
 
 import Parser.PuzzleWord;
 import UI.PuzzlePanel;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -43,6 +44,7 @@ public class PuzzleSolverVolTwo
     }
 
     public void solve() {
+
         reinit();
         for(PuzzleWord wd : panel.getAnswers().getAnswers())
         {
@@ -67,8 +69,8 @@ public class PuzzleSolverVolTwo
             return true;
         }
 
-        int question_x_index = (panel.getAnswers().getAnswers().get(q_index)).getStart();
-        int question_y_index = (panel.getAnswers().getAnswers().get(q_index)).getEnd();
+        int question_x_index = (panel.getAnswers().getAnswers().get(q_index)).getColNo();
+        int question_y_index = (panel.getAnswers().getAnswers().get(q_index)).getRowNo();
         boolean isDown;
 
         ArrayList<Word> words = new ArrayList<Word>();
@@ -77,10 +79,7 @@ public class PuzzleSolverVolTwo
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(panel.getAnswers().getAnswers().get(q_index).getDirection() == 0)
-            isDown = false;
-        else
-            isDown = true;
+        isDown = panel.getAnswers().getAnswers().get(q_index).getDirection() != 0;
 
         for(Word word : words)
         {
@@ -105,6 +104,7 @@ public class PuzzleSolverVolTwo
             //TODO: isterseniz scoring, datamuse'un scoring'i commentli bug veriyordu.
             GoogleChecker googleChecker = new GoogleChecker();
             Datamuse datamuseChecker = new Datamuse();
+            ReverseDictionary reverseDictionaryChecker = new ReverseDictionary();
             for(int j = 0; j < 10; j++)
             {
                 String hint = panel.getAnswers().getAnswers().get(j).getHint();
@@ -112,7 +112,11 @@ public class PuzzleSolverVolTwo
                 int q_no = panel.getAnswers().getAnswers().get(j).getQuestionNo();
 
                 datamuseChecker.checkDatamuse(hint, size);
+                panel.addLog("Checking google for hint : "+hint);
                 ArrayList<String> googleAnswers = GoogleChecker.getGoogleSearch(hint, size);
+                //CHECK
+                ArrayList<String> dictAnswers = ReverseDictionary.getReverseDict(hint, size);
+                //ArrayList<String> abbrevationAnswers = ;
                 ArrayList<String> datamuseAnswers = new ArrayList<String>();
                 if (!(Datamuse.results.isEmpty())) {
                     for (int i = 0; i < Datamuse.results.size(); i++) {
@@ -134,6 +138,13 @@ public class PuzzleSolverVolTwo
                         results[j].add(curr);
                 }
 
+                for (String dictAns : dictAnswers) {
+                    dictAns = dictAns.toUpperCase();
+                    Word curr = new Word(dictAns, false);
+                    if (!results[j].contains(curr))
+                        results[j].add(curr);
+                }
+
             }
             isDataCallDone = true;
         }
@@ -149,7 +160,7 @@ public class PuzzleSolverVolTwo
             for(int i = question_x_index; i < w.getWord().length()+question_x_index; i++)
             {
                 puzzle[i][question_y_index] = w.getWord().charAt(letter_counter) + "";
-                panel.addLog(puzzle[i][question_y_index]);
+                //panel.addLog(puzzle[i][question_y_index]);
                 letter_counter++;
             }
         }
@@ -159,7 +170,7 @@ public class PuzzleSolverVolTwo
             for(int i = question_y_index; i < w.getWord().length()+question_y_index; i++)
             {
                 puzzle[question_x_index][i] = w.getWord().charAt(letter_counter) + "";
-                panel.addLog(puzzle[question_x_index][i]);
+                //panel.addLog(puzzle[question_x_index][i]);
                 letter_counter++;
             }
         }
@@ -175,7 +186,7 @@ public class PuzzleSolverVolTwo
             for(int i = question_x_index; i < w.getWord().length()+question_x_index; i++)
             {
                 puzzle[i][question_y_index] = "";
-                panel.addLog(puzzle[i][question_y_index]);
+                //panel.addLog(puzzle[i][question_y_index]);
             }
         }
         else
@@ -183,7 +194,7 @@ public class PuzzleSolverVolTwo
             for(int i = question_y_index; i < w.getWord().length() + question_y_index; i++)
             {
                 puzzle[question_x_index][i] =  "";
-                panel.addLog(puzzle[question_x_index][i]);
+                //panel.addLog(puzzle[question_x_index][i]);
             }
         }
         w.setUsed(false);

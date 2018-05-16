@@ -10,10 +10,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by kaan on 3/4/2018.
@@ -39,11 +36,10 @@ public class SeleniumConnection {
 
         String pageSource = webDriver.getPageSource();
 
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
+        //Date date = new Date();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Istanbul"));
         int month = cal.get(Calendar.MONTH) + 1;
-        int day = cal.get( Calendar.DAY_OF_WEEK) + 2;
+        int day = cal.get( Calendar.DAY_OF_MONTH);
         int year = cal.get( Calendar.YEAR);
         System.out.println(month+","+day+","+year);
         String puzzlePath = "./ph/reveal-" + month + "-" + day + "-" + year + ".txt";

@@ -17,6 +17,7 @@ public class PuzzleSolver{
     private PuzzlePanel panel;
     private HashMap<Integer,Boolean> isDoneMap;
 
+
     public PuzzleSolver(CellBlock [][] puzzle2, String[][] puzzle, PuzzlePanel panel) {
         this.panel = panel;
         this.puzzle2 = puzzle2;
@@ -28,6 +29,7 @@ public class PuzzleSolver{
         }
     }
     public void solvePuzzle() throws IOException {
+
         ArrayList<String> order = new ArrayList<String>();
 
         GoogleChecker googleChecker = new GoogleChecker();
@@ -42,8 +44,8 @@ public class PuzzleSolver{
         {
             flag = true;
             String start = start_question + "";
-            int question_x_index = (panel.getAnswers().getAnswers().get(start_question)).getStart();
-            int question_y_index = (panel.getAnswers().getAnswers().get(start_question)).getEnd();
+            int question_x_index = (panel.getAnswers().getAnswers().get(start_question)).getColNo();
+            int question_y_index = (panel.getAnswers().getAnswers().get(start_question)).getRowNo();
             String hint = panel.getAnswers().getAnswers().get(start_question).getHint();
             int size = panel.getAnswers().getAnswers().get(start_question).getSize();
             int q_no = panel.getAnswers().getAnswers().get(start_question).getQuestionNo();
@@ -151,8 +153,8 @@ public class PuzzleSolver{
                     if(!isDoneMap.get(i))
                     {
                         String currStr = "";
-                        int q_start = panel.getAnswers().getAnswers().get(i-1).getStart();
-                        int q_end = panel.getAnswers().getAnswers().get(i-1).getEnd();
+                        int q_start = panel.getAnswers().getAnswers().get(i-1).getColNo();
+                        int q_end = panel.getAnswers().getAnswers().get(i-1).getRowNo();
                         int dir = panel.getAnswers().getAnswers().get(i-1).getDirection();
                         for(int j = 0; j < panel.getAnswers().getAnswers().get(i-1).getSize(); j++)
                         {

@@ -1,5 +1,5 @@
 package Parser;
-
+//CLASS THAT STORES THE PUZZLE WORD
 public class PuzzleWord {
     private int direction; // 0 ACROSS //1 DOWN
     private int questionNo;
@@ -7,6 +7,8 @@ public class PuzzleWord {
     private int rowNo;
     private int length;
     private String hint;
+    private char[] answer; //// "-" for no input
+    //////////////////////
     private String buffer;
     private int start;
     private int end;
@@ -14,13 +16,33 @@ public class PuzzleWord {
 
     public PuzzleWord(int direction ,int colNo, int rowNo, int size, int questionNo, String hint){
         this.direction = direction;
-        this.start = colNo;
-        this.end = rowNo;
+        this.colNo = colNo;
+        this.rowNo = rowNo;
         this.size = size;
         this.questionNo = questionNo;
         this.hint = hint;
+        this.answer = new char[size];
+        for(int i = 0; i < size; i++)
+            answer[i] = '?';
     }
-
+    public void removeAll(){
+        for(int i = 0; i< size; i++)
+            removeCharAt(i);
+    }
+    public void updateAnswer(String inp){
+        answer = inp.toCharArray();
+    }
+    public void updateAnswerLetter(char inp, int index){
+        answer[index] = inp;
+    }
+    public char getAnswerLetter(int index){
+        return answer[index];
+    }
+    public String getAnswer() {
+        String output = new String(answer);
+        return output;
+    }
+    /////////////////////
     public PuzzleWord( int colNo, int rowNo, int length, String hint, int loc, int questionNo){
         this.colNo = colNo;
         this.rowNo = rowNo;
@@ -106,21 +128,21 @@ public class PuzzleWord {
         }
         buffer = tmp;
     }
-
+    public String getCharAt(int i){
+        if(answer[i] == '?')
+            return "";
+        else
+            return "" + answer[i];
+    }
+    public void removeCharAt(int i){
+        answer[i] = '?';
+    }
     public int getDirection() {
         return direction;
     }
 
     public int getQuestionNo() {
         return questionNo;
-    }
-
-    public int getStart() {
-        return start;
-    }
-
-    public int getEnd() {
-        return end;
     }
 
     public int getSize() {
